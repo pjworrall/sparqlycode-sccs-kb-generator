@@ -23,6 +23,7 @@ import org.joda.time.format.DateTimeFormatterBuilder;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.sparql.vocabulary.FOAF;
 import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.vocabulary.RDFS;
 
@@ -129,15 +130,12 @@ public class SccsServiceForGitImpl implements SccsService {
 		for (RevCommit commit : log) {
 			// create an RDF Resource for a Commit
 			Resource commitResource = model.createResource(prefix + "commit/"
-					+ commit.getName());
+					+ commit.getName(), PROVO.Activity);
 
 			// add a property (nothing appears in the model until a property is
 			// applied)
 			commitResource.addProperty(RDFS.label,
 					model.createTypedLiteral(commit.getName()));
-
-			// declare the commit as a prov:Activity type
-			commitResource.addProperty(RDF.type, PROVO.Activity);
 
 			// create an association with each controlled artefact (file)
 			RevTree tree = commit.getTree();
@@ -148,8 +146,7 @@ public class SccsServiceForGitImpl implements SccsService {
 			while (treeWalk.next()) {
 				
 				// make each file a prov:Entity
-				Resource fileResource = model.createResource(prefix + treeWalk.getPathString());
-				fileResource.addProperty(RDF.type, PROVO.Entity);
+				Resource fileResource = model.createResource(prefix + treeWalk.getPathString(), PROVO.Entity);
 				
 				// relate the prov:Entity to the commit
 				commitResource.addProperty(PROVO.used, fileResource);
@@ -174,6 +171,16 @@ public class SccsServiceForGitImpl implements SccsService {
 								
 				// need to find out how to specify type like time..this isn't correct
 				commitResource.addProperty(PROVO.endedAtTime, model.createTypedLiteral(date, "xsd:dateTime"));
+				
+				// create an Author for the Activity and associate them with prov:wasAssociatedWith
+				// TODO: apparently getAuthorIdent.getEMailAddress is expensive so in future authors should be cached and reused
+				String authorEmail = commit.getAuthorIdent().getEmailAddress() ;
+				Resource author = model.createResource("mailto:" + authorEmail, PROVO.Person );
+				commitResource.addProperty(PROVO.wasAssociatedWith, author);
+				
+				// MAdd some foaf properties to the author			
+				author.addProperty(FOAF.name, commit.getAuthorIdent().getName());
+				author.addProperty(FOAF.mbox, authorEmail);
 				
 			}
 

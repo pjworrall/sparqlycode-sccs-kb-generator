@@ -1,0 +1,11 @@
+# This checks that prov:wasAssociatedWith properties are prov:Person types
+
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+
+#SELECT ?_commit ?_person where {
+ASK WHERE {
+	?_commit a  prov:Activity .
+	?_commit prov:wasAssociatedWith ?_person .
+	filter (datatype(?time) = prov:Person )
+}

@@ -1,4 +1,3 @@
- 
  /**
  * 
  */
@@ -12,7 +11,7 @@ import org.junit.Test;
  * @author Paul Worrall, Interition Ltd
  *
  */
-public class PROVGitActivityTest extends SparqlycodeBaseTest {
+public class PROVGitActivityAuthorTypeTest extends SparqlycodeBaseTest {
 
 	/**
 	 * @throws java.lang.Exception
@@ -25,8 +24,8 @@ public class PROVGitActivityTest extends SparqlycodeBaseTest {
 	@Test
 	public void uriLineNumberForFieldTest() throws Exception {
 		
-		assertTrue("PROVGitActivityTest didn't encounter any instances of prov:Activity for commits",
-				 sparqlyCodeTest("PROVGitActivityTest"));
+		assertFalse("PROVGitActivitAuthoryTypeTest didn't find any objects for prov:wasAssociatedWith that were prov:Person type",
+				 sparqlyCodeTest("PROVGitActivityAuthorTypeTest"));
 	}
 
 }

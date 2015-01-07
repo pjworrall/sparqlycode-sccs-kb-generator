@@ -1,0 +1,12 @@
+# This checks that there are not any instances of prov:Person that do not have a foaf:email
+# prov:Person is a child of prov:Agent so another test would be to use prov:Agent as the selection criteria
+
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+
+#SELECT ?_author where {
+ASK WHERE {
+	?_author a prov:Person .
+	filter(foaf:email) .
+}
