@@ -1,0 +1,8 @@
+# This checks for the existence of Git commits represented as prov:Activity types
+
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+
+SELECT * WHERE {
+	?commit a  prov:Activity .
+}

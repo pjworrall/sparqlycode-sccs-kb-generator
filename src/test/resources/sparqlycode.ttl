@@ -1,0 +1,548 @@
+@prefix :      <http://www.interition.net/sparqlycode/id/> .
+
+<http://www.interition.net/sparqlycode/id/net/interition/sparqlycode/sccs/git/SccsServiceForGitImpl/createArtefactUri#63>
+        a       <http://www.interition.net/java/ref/Method> ;
+        <http://www.w3.org/2000/01/rdf-schema#label>
+                "createArtefactUri" ;
+        <http://www.interition.net/java/ref/access>
+                "Public" ;
+        <http://www.interition.net/java/ref/lineNumber>
+                "63"^^<http://www.w3.org/2001/XMLSchema#int> ;
+        <http://www.interition.net/java/ref/returns>
+                [ <http://www.interition.net/java/ref/type>
+                          <http://www.interition.net/sparqlycode/id/java/net/URI> ] .
+
+<http://www.interition.net/sparqlycode/id/net/interition/sparqlycode/sccs/git/SccsServiceForGitImpl/publishSCforHead#73>
+        a       <http://www.interition.net/java/ref/Method> ;
+        <http://www.w3.org/2000/01/rdf-schema#label>
+                "publishSCforHead" ;
+        <http://www.interition.net/java/ref/access>
+                "Public" ;
+        <http://www.interition.net/java/ref/argument>
+                [ <http://www.w3.org/2000/01/rdf-schema#label>
+                          "out" ;
+                  <http://www.interition.net/java/ref/type>
+                          <http://www.interition.net/sparqlycode/id/java/io/File>
+                ] ;
+        <http://www.interition.net/java/ref/lineNumber>
+                "73"^^<http://www.w3.org/2001/XMLSchema#int> ;
+        <http://www.interition.net/java/ref/returns>
+                [ <http://www.interition.net/java/ref/type>
+                          :void ] ;
+        <http://www.interition.net/java/ref/throws>
+                <http://www.interition.net/sparqlycode/id/java/lang/Exception> .
+
+<http://www.interition.net/sparqlycode/id/net/interition/sparqlycode/sccs/git/SccsServiceForGitImpl/createArtefactUri#68>
+        a       <http://www.interition.net/java/ref/Method> ;
+        <http://www.w3.org/2000/01/rdf-schema#label>
+                "createArtefactUri" ;
+        <http://www.interition.net/java/ref/access>
+                "Public" ;
+        <http://www.interition.net/java/ref/argument>
+                [ <http://www.w3.org/2000/01/rdf-schema#label>
+                          "projectName" ;
+                  <http://www.interition.net/java/ref/type>
+                          <http://www.interition.net/sparqlycode/id/java/lang/String>
+                ] ;
+        <http://www.interition.net/java/ref/argument>
+                [ <http://www.w3.org/2000/01/rdf-schema#label>
+                          "globalName" ;
+                  <http://www.interition.net/java/ref/type>
+                          <http://www.interition.net/sparqlycode/id/java/lang/String>
+                ] ;
+        <http://www.interition.net/java/ref/lineNumber>
+                "68"^^<http://www.w3.org/2001/XMLSchema#int> ;
+        <http://www.interition.net/java/ref/returns>
+                [ <http://www.interition.net/java/ref/type>
+                          <http://www.interition.net/sparqlycode/id/java/net/URI> ] .
+
+<http://www.interition.net/sparqlycode/id/net/interition/sparqlycode/sccs/git/SccsServiceForGitImpl/createArtefactUriAsString#52>
+        a       <http://www.interition.net/java/ref/Method> ;
+        <http://www.w3.org/2000/01/rdf-schema#label>
+                "createArtefactUriAsString" ;
+        <http://www.interition.net/java/ref/access>
+                "Public" ;
+        <http://www.interition.net/java/ref/lineNumber>
+                "52"^^<http://www.w3.org/2001/XMLSchema#int> ;
+        <http://www.interition.net/java/ref/returns>
+                [ <http://www.interition.net/java/ref/type>
+                          <http://www.interition.net/sparqlycode/id/java/lang/String> ] .
+
+<http://www.interition.net/sparqlycode/id/net/interition/sparqlycode/sccs/git/SccsServiceForGitImpl/buildPrefix#148>
+        a       <http://www.interition.net/java/ref/Method> ;
+        <http://www.w3.org/2000/01/rdf-schema#label>
+                "buildPrefix" ;
+        <http://www.interition.net/java/ref/access>
+                "Private" ;
+        <http://www.interition.net/java/ref/argument>
+                [ <http://www.w3.org/2000/01/rdf-schema#label>
+                          "project" ;
+                  <http://www.interition.net/java/ref/type>
+                          <http://www.interition.net/sparqlycode/id/java/lang/String>
+                ] ;
+        <http://www.interition.net/java/ref/argument>
+                [ <http://www.w3.org/2000/01/rdf-schema#label>
+                          "sccs" ;
+                  <http://www.interition.net/java/ref/type>
+                          <http://www.interition.net/sparqlycode/id/java/lang/String>
+                ] ;
+        <http://www.interition.net/java/ref/argument>
+                [ <http://www.w3.org/2000/01/rdf-schema#label>
+                          "global" ;
+                  <http://www.interition.net/java/ref/type>
+                          <http://www.interition.net/sparqlycode/id/java/lang/String>
+                ] ;
+        <http://www.interition.net/java/ref/lineNumber>
+                "148"^^<http://www.w3.org/2001/XMLSchema#int> ;
+        <http://www.interition.net/java/ref/returns>
+                [ <http://www.interition.net/java/ref/type>
+                          <http://www.interition.net/sparqlycode/id/java/lang/String> ] .
+
+<http://www.interition.net/sparqlycode/id/net/interition/sparqlycode/sccs/git/SccsServiceForGitImpl/publishSCforTag#89>
+        a       <http://www.interition.net/java/ref/Method> ;
+        <http://www.w3.org/2000/01/rdf-schema#label>
+                "publishSCforTag" ;
+        <http://www.interition.net/java/ref/access>
+                "Public" ;
+        <http://www.interition.net/java/ref/argument>
+                [ <http://www.w3.org/2000/01/rdf-schema#label>
+                          "out" ;
+                  <http://www.interition.net/java/ref/type>
+                          <http://www.interition.net/sparqlycode/id/java/io/File>
+                ] ;
+        <http://www.interition.net/java/ref/argument>
+                [ <http://www.w3.org/2000/01/rdf-schema#label>
+                          "tagName" ;
+                  <http://www.interition.net/java/ref/type>
+                          <http://www.interition.net/sparqlycode/id/java/lang/String>
+                ] ;
+        <http://www.interition.net/java/ref/lineNumber>
+                "89"^^<http://www.w3.org/2001/XMLSchema#int> ;
+        <http://www.interition.net/java/ref/returns>
+                [ <http://www.interition.net/java/ref/type>
+                          :void ] .
+
+<http://www.interition.net/sparqlycode/id/net/interition/sparqlycode/sccs/git/JGitExplorer/PREFIX#22>
+        a       <http://www.interition.net/java/ref/Field> ;
+        <http://www.w3.org/2000/01/rdf-schema#label>
+                "PREFIX" ;
+        <http://www.interition.net/java/ref/access>
+                "Public" ;
+        <http://www.interition.net/java/ref/isStatic>
+                true ;
+        <http://www.interition.net/java/ref/lineNumber>
+                "22"^^<http://www.w3.org/2001/XMLSchema#int> ;
+        <http://www.interition.net/java/ref/type>
+                <http://www.interition.net/sparqlycode/id/java/lang/String> .
+
+<http://www.interition.net/sparqlycode/id/net/interition/sparqlycode/sccs/git/SccsServiceForGitImpl/sccsProjectRootFolder#41>
+        a       <http://www.interition.net/java/ref/Field> ;
+        <http://www.w3.org/2000/01/rdf-schema#label>
+                "sccsProjectRootFolder" ;
+        <http://www.interition.net/java/ref/access>
+                "Private" ;
+        <http://www.interition.net/java/ref/lineNumber>
+                "41"^^<http://www.w3.org/2001/XMLSchema#int> ;
+        <http://www.interition.net/java/ref/type>
+                <http://www.interition.net/sparqlycode/id/java/lang/String> .
+
+<http://www.interition.net/sparqlycode/id/net/interition/sparqlycode/sccs/git/SccsServiceForGitImpl/createArtefactUriAsString#57>
+        a       <http://www.interition.net/java/ref/Method> ;
+        <http://www.w3.org/2000/01/rdf-schema#label>
+                "createArtefactUriAsString" ;
+        <http://www.interition.net/java/ref/access>
+                "Public" ;
+        <http://www.interition.net/java/ref/argument>
+                [ <http://www.w3.org/2000/01/rdf-schema#label>
+                          "projectName" ;
+                  <http://www.interition.net/java/ref/type>
+                          <http://www.interition.net/sparqlycode/id/java/lang/String>
+                ] ;
+        <http://www.interition.net/java/ref/argument>
+                [ <http://www.w3.org/2000/01/rdf-schema#label>
+                          "globalName" ;
+                  <http://www.interition.net/java/ref/type>
+                          <http://www.interition.net/sparqlycode/id/java/lang/String>
+                ] ;
+        <http://www.interition.net/java/ref/lineNumber>
+                "57"^^<http://www.w3.org/2001/XMLSchema#int> ;
+        <http://www.interition.net/java/ref/returns>
+                [ <http://www.interition.net/java/ref/type>
+                          <http://www.interition.net/sparqlycode/id/java/lang/String> ] .
+
+<http://www.interition.net/sparqlycode/id/net/interition/sparqlycode/sccs/git/SccsServiceForGitImpl/writeRdf#163>
+        a       <http://www.interition.net/java/ref/Method> ;
+        <http://www.w3.org/2000/01/rdf-schema#label>
+                "writeRdf" ;
+        <http://www.interition.net/java/ref/access>
+                "Private" ;
+        <http://www.interition.net/java/ref/argument>
+                [ <http://www.w3.org/2000/01/rdf-schema#label>
+                          "out" ;
+                  <http://www.interition.net/java/ref/type>
+                          <http://www.interition.net/sparqlycode/id/java/io/File>
+                ] ;
+        <http://www.interition.net/java/ref/argument>
+                [ <http://www.w3.org/2000/01/rdf-schema#label>
+                          "model" ;
+                  <http://www.interition.net/java/ref/type>
+                          <http://www.interition.net/sparqlycode/id/com/hp/hpl/jena/rdf/model/Model>
+                ] ;
+        <http://www.interition.net/java/ref/lineNumber>
+                "163"^^<http://www.w3.org/2001/XMLSchema#int> ;
+        <http://www.interition.net/java/ref/returns>
+                [ <http://www.interition.net/java/ref/type>
+                          :void ] ;
+        <http://www.interition.net/java/ref/throws>
+                <http://www.interition.net/sparqlycode/id/java/lang/Exception> .
+
+<http://www.interition.net/sparqlycode/id/net/interition/sparqlycode/sccs/SccsService/publishSCforHead#44>
+        a       <http://www.interition.net/java/ref/Method> ;
+        <http://www.w3.org/2000/01/rdf-schema#label>
+                "publishSCforHead" ;
+        <http://www.interition.net/java/ref/access>
+                "Public" ;
+        <http://www.interition.net/java/ref/argument>
+                [ <http://www.w3.org/2000/01/rdf-schema#label>
+                          "out" ;
+                  <http://www.interition.net/java/ref/type>
+                          <http://www.interition.net/sparqlycode/id/java/io/File>
+                ] ;
+        <http://www.interition.net/java/ref/lineNumber>
+                "44"^^<http://www.w3.org/2001/XMLSchema#int> ;
+        <http://www.interition.net/java/ref/returns>
+                [ <http://www.interition.net/java/ref/type>
+                          :void ] ;
+        <http://www.interition.net/java/ref/throws>
+                <http://www.interition.net/sparqlycode/id/java/lang/Exception> .
+
+<http://www.interition.net/sparqlycode/id/net/interition/sparqlycode/sccs/SccsService/createArtefactUriAsString#18>
+        a       <http://www.interition.net/java/ref/Method> ;
+        <http://www.w3.org/2000/01/rdf-schema#label>
+                "createArtefactUriAsString" ;
+        <http://www.interition.net/java/ref/access>
+                "Public" ;
+        <http://www.interition.net/java/ref/lineNumber>
+                "18"^^<http://www.w3.org/2001/XMLSchema#int> ;
+        <http://www.interition.net/java/ref/returns>
+                [ <http://www.interition.net/java/ref/type>
+                          <http://www.interition.net/sparqlycode/id/java/lang/String> ] .
+
+<http://www.interition.net/sparqlycode/id/net/interition/sparqlycode/sccs/SccsService/publishSCforBranch#46>
+        a       <http://www.interition.net/java/ref/Method> ;
+        <http://www.w3.org/2000/01/rdf-schema#label>
+                "publishSCforBranch" ;
+        <http://www.interition.net/java/ref/access>
+                "Public" ;
+        <http://www.interition.net/java/ref/argument>
+                [ <http://www.w3.org/2000/01/rdf-schema#label>
+                          "out" ;
+                  <http://www.interition.net/java/ref/type>
+                          <http://www.interition.net/sparqlycode/id/java/io/File>
+                ] ;
+        <http://www.interition.net/java/ref/argument>
+                [ <http://www.w3.org/2000/01/rdf-schema#label>
+                          "branchName" ;
+                  <http://www.interition.net/java/ref/type>
+                          <http://www.interition.net/sparqlycode/id/java/lang/String>
+                ] ;
+        <http://www.interition.net/java/ref/lineNumber>
+                "46"^^<http://www.w3.org/2001/XMLSchema#int> ;
+        <http://www.interition.net/java/ref/returns>
+                [ <http://www.interition.net/java/ref/type>
+                          :void ] ;
+        <http://www.interition.net/java/ref/throws>
+                <http://www.interition.net/sparqlycode/id/java/lang/Exception> .
+
+<http://www.interition.net/sparqlycode/id/net/interition/sparqlycode/sccs/git/SccsServiceForGitImpl/prefix#40>
+        a       <http://www.interition.net/java/ref/Field> ;
+        <http://www.w3.org/2000/01/rdf-schema#label>
+                "prefix" ;
+        <http://www.interition.net/java/ref/access>
+                "Private" ;
+        <http://www.interition.net/java/ref/lineNumber>
+                "40"^^<http://www.w3.org/2001/XMLSchema#int> ;
+        <http://www.interition.net/java/ref/type>
+                <http://www.interition.net/sparqlycode/id/java/lang/String> .
+
+<http://www.interition.net/sparqlycode/id/net/interition/sparqlycode/sccs/git/JGitExplorer>
+        a       <http://www.interition.net/java/ref/Class> ;
+        <http://www.w3.org/2000/01/rdf-schema#label>
+                "JGitExplorer" ;
+        <http://www.interition.net/java/ref/access>
+                "Public" ;
+        <http://www.interition.net/java/ref/constructor>
+                <http://www.interition.net/sparqlycode/id/net/interition/sparqlycode/sccs/git/JGitExplorer#20> ;
+        <http://www.interition.net/java/ref/extends>
+                <http://www.interition.net/sparqlycode/id/java/lang/Object> ;
+        <http://www.interition.net/java/ref/field>
+                <http://www.interition.net/sparqlycode/id/net/interition/sparqlycode/sccs/git/JGitExplorer/PREFIX#22> , <http://www.interition.net/sparqlycode/id/net/interition/sparqlycode/sccs/git/JGitExplorer/PROJECT_PREFIX#24> ;
+        <http://www.interition.net/java/ref/imports>
+                <http://www.interition.net/sparqlycode/id/java/lang> ;
+        <http://www.interition.net/java/ref/lineNumber>
+                "20"^^<http://www.w3.org/2001/XMLSchema#int> ;
+        <http://www.interition.net/java/ref/method>
+                <http://www.interition.net/sparqlycode/id/net/interition/sparqlycode/sccs/git/JGitExplorer/main#26> ;
+        <http://www.interition.net/java/ref/package>
+                "net.interition.sparqlycode.sccs.git" .
+
+<http://www.interition.net/sparqlycode/id/net/interition/sparqlycode/sccs/git/SccsServiceForGitImpl/generateRDF#94>
+        a       <http://www.interition.net/java/ref/Method> ;
+        <http://www.w3.org/2000/01/rdf-schema#label>
+                "generateRDF" ;
+        <http://www.interition.net/java/ref/access>
+                "Private" ;
+        <http://www.interition.net/java/ref/argument>
+                [ <http://www.w3.org/2000/01/rdf-schema#label>
+                          "out" ;
+                  <http://www.interition.net/java/ref/type>
+                          <http://www.interition.net/sparqlycode/id/java/io/File>
+                ] ;
+        <http://www.interition.net/java/ref/lineNumber>
+                "94"^^<http://www.w3.org/2001/XMLSchema#int> ;
+        <http://www.interition.net/java/ref/returns>
+                [ <http://www.interition.net/java/ref/type>
+                          :void ] ;
+        <http://www.interition.net/java/ref/throws>
+                <http://www.interition.net/sparqlycode/id/java/lang/Exception> .
+
+<http://www.interition.net/sparqlycode/id/net/interition/sparqlycode/sccs/git/SccsServiceForGitImpl>
+        a       <http://www.interition.net/java/ref/Class> ;
+        <http://www.w3.org/2000/01/rdf-schema#label>
+                "SccsServiceForGitImpl" ;
+        <http://www.interition.net/java/ref/access>
+                "Public" ;
+        <http://www.interition.net/java/ref/constructor>
+                <http://www.interition.net/sparqlycode/id/net/interition/sparqlycode/sccs/git/SccsServiceForGitImpl#43> ;
+        <http://www.interition.net/java/ref/extends>
+                <http://www.interition.net/sparqlycode/id/java/lang/Object> ;
+        <http://www.interition.net/java/ref/field>
+                <http://www.interition.net/sparqlycode/id/net/interition/sparqlycode/sccs/git/SccsServiceForGitImpl/sccsProjectRootFolder#41> , <http://www.interition.net/sparqlycode/id/net/interition/sparqlycode/sccs/git/SccsServiceForGitImpl/model#49> , <http://www.interition.net/sparqlycode/id/net/interition/sparqlycode/sccs/git/SccsServiceForGitImpl/logger#38> , <http://www.interition.net/sparqlycode/id/net/interition/sparqlycode/sccs/git/SccsServiceForGitImpl/prefix#40> ;
+        <http://www.interition.net/java/ref/implements>
+                <http://www.interition.net/sparqlycode/id/net/interition/sparqlycode/sccs/SccsService> ;
+        <http://www.interition.net/java/ref/imports>
+                <http://www.interition.net/sparqlycode/id/java/lang> ;
+        <http://www.interition.net/java/ref/lineNumber>
+                "36"^^<http://www.w3.org/2001/XMLSchema#int> ;
+        <http://www.interition.net/java/ref/method>
+                <http://www.interition.net/sparqlycode/id/net/interition/sparqlycode/sccs/git/SccsServiceForGitImpl/createArtefactUriAsString#57> , <http://www.interition.net/sparqlycode/id/net/interition/sparqlycode/sccs/git/SccsServiceForGitImpl/createArtefactUri#68> , <http://www.interition.net/sparqlycode/id/net/interition/sparqlycode/sccs/git/SccsServiceForGitImpl/createArtefactUri#63> , <http://www.interition.net/sparqlycode/id/net/interition/sparqlycode/sccs/git/SccsServiceForGitImpl/publishSCforHead#73> , <http://www.interition.net/sparqlycode/id/net/interition/sparqlycode/sccs/git/SccsServiceForGitImpl/buildPrefix#148> , <http://www.interition.net/sparqlycode/id/net/interition/sparqlycode/sccs/git/SccsServiceForGitImpl/publishSCforTag#89> , <http://www.interition.net/sparqlycode/id/net/interition/sparqlycode/sccs/git/SccsServiceForGitImpl/publishSCforBranch#84> , <http://www.interition.net/sparqlycode/id/net/interition/sparqlycode/sccs/git/SccsServiceForGitImpl/writeRdf#163> , <http://www.interition.net/sparqlycode/id/net/interition/sparqlycode/sccs/git/SccsServiceForGitImpl/createArtefactUriAsString#52> , <http://www.interition.net/sparqlycode/id/net/interition/sparqlycode/sccs/git/SccsServiceForGitImpl/generateRDF#94> ;
+        <http://www.interition.net/java/ref/package>
+                "net.interition.sparqlycode.sccs.git" .
+
+<http://www.interition.net/sparqlycode/id/net/interition/sparqlycode/sccs/git/SccsServiceForGitImpl#43>
+        a       <http://www.interition.net/java/ref/Constructor> ;
+        <http://www.w3.org/2000/01/rdf-schema#label>
+                "SccsServiceForGitImpl" ;
+        <http://www.interition.net/java/ref/access>
+                "Public" ;
+        <http://www.interition.net/java/ref/argument>
+                [ <http://www.w3.org/2000/01/rdf-schema#label>
+                          "folder" ;
+                  <http://www.interition.net/java/ref/type>
+                          <http://www.interition.net/sparqlycode/id/java/lang/String>
+                ] ;
+        <http://www.interition.net/java/ref/argument>
+                [ <http://www.w3.org/2000/01/rdf-schema#label>
+                          "project" ;
+                  <http://www.interition.net/java/ref/type>
+                          <http://www.interition.net/sparqlycode/id/java/lang/String>
+                ] ;
+        <http://www.interition.net/java/ref/lineNumber>
+                "43"^^<http://www.w3.org/2001/XMLSchema#int> .
+
+<http://www.interition.net/sparqlycode/id/net/interition/sparqlycode/sccs/SccsService>
+        a       <http://www.interition.net/java/ref/Interface> ;
+        <http://www.w3.org/2000/01/rdf-schema#label>
+                "SccsService" ;
+        <http://www.interition.net/java/ref/access>
+                "Public" ;
+        <http://www.interition.net/java/ref/imports>
+                <http://www.interition.net/sparqlycode/id/java/lang> ;
+        <http://www.interition.net/java/ref/isAbstract>
+                true ;
+        <http://www.interition.net/java/ref/lineNumber>
+                "10"^^<http://www.w3.org/2001/XMLSchema#int> ;
+        <http://www.interition.net/java/ref/method>
+                <http://www.interition.net/sparqlycode/id/net/interition/sparqlycode/sccs/SccsService/publishSCforTag#48> , <http://www.interition.net/sparqlycode/id/net/interition/sparqlycode/sccs/SccsService/createArtefactUri#33> , <http://www.interition.net/sparqlycode/id/net/interition/sparqlycode/sccs/SccsService/createArtefactUri#42> , <http://www.interition.net/sparqlycode/id/net/interition/sparqlycode/sccs/SccsService/publishSCforBranch#46> , <http://www.interition.net/sparqlycode/id/net/interition/sparqlycode/sccs/SccsService/createArtefactUriAsString#18> , <http://www.interition.net/sparqlycode/id/net/interition/sparqlycode/sccs/SccsService/publishSCforHead#44> , <http://www.interition.net/sparqlycode/id/net/interition/sparqlycode/sccs/SccsService/createArtefactUriAsString#28> ;
+        <http://www.interition.net/java/ref/package>
+                "net.interition.sparqlycode.sccs" .
+
+<http://www.interition.net/sparqlycode/id/net/interition/sparqlycode/sccs/SccsService/createArtefactUri#42>
+        a       <http://www.interition.net/java/ref/Method> ;
+        <http://www.w3.org/2000/01/rdf-schema#label>
+                "createArtefactUri" ;
+        <http://www.interition.net/java/ref/access>
+                "Public" ;
+        <http://www.interition.net/java/ref/argument>
+                [ <http://www.w3.org/2000/01/rdf-schema#label>
+                          "projectName" ;
+                  <http://www.interition.net/java/ref/type>
+                          <http://www.interition.net/sparqlycode/id/java/lang/String>
+                ] ;
+        <http://www.interition.net/java/ref/argument>
+                [ <http://www.w3.org/2000/01/rdf-schema#label>
+                          "globalName" ;
+                  <http://www.interition.net/java/ref/type>
+                          <http://www.interition.net/sparqlycode/id/java/lang/String>
+                ] ;
+        <http://www.interition.net/java/ref/lineNumber>
+                "42"^^<http://www.w3.org/2001/XMLSchema#int> ;
+        <http://www.interition.net/java/ref/returns>
+                [ <http://www.interition.net/java/ref/type>
+                          <http://www.interition.net/sparqlycode/id/java/net/URI> ] .
+
+<http://www.interition.net/sparqlycode/id/net/interition/sparqlycode/sccs/SccsService/publishSCforTag#48>
+        a       <http://www.interition.net/java/ref/Method> ;
+        <http://www.w3.org/2000/01/rdf-schema#label>
+                "publishSCforTag" ;
+        <http://www.interition.net/java/ref/access>
+                "Public" ;
+        <http://www.interition.net/java/ref/argument>
+                [ <http://www.w3.org/2000/01/rdf-schema#label>
+                          "out" ;
+                  <http://www.interition.net/java/ref/type>
+                          <http://www.interition.net/sparqlycode/id/java/io/File>
+                ] ;
+        <http://www.interition.net/java/ref/argument>
+                [ <http://www.w3.org/2000/01/rdf-schema#label>
+                          "tagName" ;
+                  <http://www.interition.net/java/ref/type>
+                          <http://www.interition.net/sparqlycode/id/java/lang/String>
+                ] ;
+        <http://www.interition.net/java/ref/lineNumber>
+                "48"^^<http://www.w3.org/2001/XMLSchema#int> ;
+        <http://www.interition.net/java/ref/returns>
+                [ <http://www.interition.net/java/ref/type>
+                          :void ] ;
+        <http://www.interition.net/java/ref/throws>
+                <http://www.interition.net/sparqlycode/id/java/lang/Exception> .
+
+<http://www.interition.net/sparqlycode/id/net/interition/sparqlycode/sccs/git/SccsServiceForGitImpl/logger#38>
+        a       <http://www.interition.net/java/ref/Field> ;
+        <http://www.w3.org/2000/01/rdf-schema#label>
+                "logger" ;
+        <http://www.interition.net/java/ref/access>
+                "Private" ;
+        <http://www.interition.net/java/ref/isFinal>
+                true ;
+        <http://www.interition.net/java/ref/lineNumber>
+                "38"^^<http://www.w3.org/2001/XMLSchema#int> ;
+        <http://www.interition.net/java/ref/type>
+                <http://www.interition.net/sparqlycode/id/org/apache/commons/logging/Log> .
+
+<http://www.interition.net/sparqlycode/id/net/interition/sparqlycode/sccs/git/JGitExplorer/main#26>
+        a       <http://www.interition.net/java/ref/Method> ;
+        <http://www.w3.org/2000/01/rdf-schema#label>
+                "main" ;
+        <http://www.interition.net/java/ref/access>
+                "Public" ;
+        <http://www.interition.net/java/ref/argument>
+                [ <http://www.w3.org/2000/01/rdf-schema#label>
+                          "arg" ;
+                  <http://www.interition.net/java/ref/dimension>
+                          "1"^^<http://www.w3.org/2001/XMLSchema#int> ;
+                  <http://www.interition.net/java/ref/type>
+                          <http://www.interition.net/sparqlycode/id/java/lang/String>
+                ] ;
+        <http://www.interition.net/java/ref/isStatic>
+                true ;
+        <http://www.interition.net/java/ref/lineNumber>
+                "26"^^<http://www.w3.org/2001/XMLSchema#int> ;
+        <http://www.interition.net/java/ref/returns>
+                [ <http://www.interition.net/java/ref/type>
+                          :void ] ;
+        <http://www.interition.net/java/ref/throws>
+                <http://www.interition.net/sparqlycode/id/org/eclipse/jgit/api/errors/GitAPIException> , <http://www.interition.net/sparqlycode/id/java/io/IOException> , <http://www.interition.net/sparqlycode/id/org/eclipse/jgit/api/errors/NoHeadException> .
+
+<http://www.interition.net/sparqlycode/id/net/interition/sparqlycode/sccs/git/SccsServiceForGitImpl/publishSCforBranch#84>
+        a       <http://www.interition.net/java/ref/Method> ;
+        <http://www.w3.org/2000/01/rdf-schema#label>
+                "publishSCforBranch" ;
+        <http://www.interition.net/java/ref/access>
+                "Public" ;
+        <http://www.interition.net/java/ref/argument>
+                [ <http://www.w3.org/2000/01/rdf-schema#label>
+                          "out" ;
+                  <http://www.interition.net/java/ref/type>
+                          <http://www.interition.net/sparqlycode/id/java/io/File>
+                ] ;
+        <http://www.interition.net/java/ref/argument>
+                [ <http://www.w3.org/2000/01/rdf-schema#label>
+                          "branchName" ;
+                  <http://www.interition.net/java/ref/type>
+                          <http://www.interition.net/sparqlycode/id/java/lang/String>
+                ] ;
+        <http://www.interition.net/java/ref/lineNumber>
+                "84"^^<http://www.w3.org/2001/XMLSchema#int> ;
+        <http://www.interition.net/java/ref/returns>
+                [ <http://www.interition.net/java/ref/type>
+                          :void ] .
+
+<http://www.interition.net/sparqlycode/id/net/interition/sparqlycode/sccs/git/SccsServiceForGitImpl/model#49>
+        a       <http://www.interition.net/java/ref/Field> ;
+        <http://www.w3.org/2000/01/rdf-schema#label>
+                "model" ;
+        <http://www.interition.net/java/ref/access>
+                "Private" ;
+        <http://www.interition.net/java/ref/lineNumber>
+                "49"^^<http://www.w3.org/2001/XMLSchema#int> ;
+        <http://www.interition.net/java/ref/type>
+                <http://www.interition.net/sparqlycode/id/com/hp/hpl/jena/rdf/model/Model> .
+
+<http://www.interition.net/sparqlycode/id/net/interition/sparqlycode/sccs/git/JGitExplorer#20>
+        a       <http://www.interition.net/java/ref/Constructor> ;
+        <http://www.w3.org/2000/01/rdf-schema#label>
+                "JGitExplorer" ;
+        <http://www.interition.net/java/ref/access>
+                "Public" ;
+        <http://www.interition.net/java/ref/lineNumber>
+                "20"^^<http://www.w3.org/2001/XMLSchema#int> .
+
+<http://www.interition.net/sparqlycode/id/net/interition/sparqlycode/sccs/SccsService/createArtefactUri#33>
+        a       <http://www.interition.net/java/ref/Method> ;
+        <http://www.w3.org/2000/01/rdf-schema#label>
+                "createArtefactUri" ;
+        <http://www.interition.net/java/ref/access>
+                "Public" ;
+        <http://www.interition.net/java/ref/lineNumber>
+                "33"^^<http://www.w3.org/2001/XMLSchema#int> ;
+        <http://www.interition.net/java/ref/returns>
+                [ <http://www.interition.net/java/ref/type>
+                          <http://www.interition.net/sparqlycode/id/java/net/URI> ] .
+
+<http://www.interition.net/sparqlycode/id/net/interition/sparqlycode/sccs/SccsService/createArtefactUriAsString#28>
+        a       <http://www.interition.net/java/ref/Method> ;
+        <http://www.w3.org/2000/01/rdf-schema#label>
+                "createArtefactUriAsString" ;
+        <http://www.interition.net/java/ref/access>
+                "Public" ;
+        <http://www.interition.net/java/ref/argument>
+                [ <http://www.w3.org/2000/01/rdf-schema#label>
+                          "projectName" ;
+                  <http://www.interition.net/java/ref/type>
+                          <http://www.interition.net/sparqlycode/id/java/lang/String>
+                ] ;
+        <http://www.interition.net/java/ref/argument>
+                [ <http://www.w3.org/2000/01/rdf-schema#label>
+                          "globalName" ;
+                  <http://www.interition.net/java/ref/type>
+                          <http://www.interition.net/sparqlycode/id/java/lang/String>
+                ] ;
+        <http://www.interition.net/java/ref/lineNumber>
+                "28"^^<http://www.w3.org/2001/XMLSchema#int> ;
+        <http://www.interition.net/java/ref/returns>
+                [ <http://www.interition.net/java/ref/type>
+                          <http://www.interition.net/sparqlycode/id/java/lang/String> ] .
+
+<http://www.interition.net/sparqlycode/id/net/interition/sparqlycode/sccs/git/JGitExplorer/PROJECT_PREFIX#24>
+        a       <http://www.interition.net/java/ref/Field> ;
+        <http://www.w3.org/2000/01/rdf-schema#label>
+                "PROJECT_PREFIX" ;
+        <http://www.interition.net/java/ref/access>
+                "Public" ;
+        <http://www.interition.net/java/ref/isStatic>
+                true ;
+        <http://www.interition.net/java/ref/lineNumber>
+                "24"^^<http://www.w3.org/2001/XMLSchema#int> ;
+        <http://www.interition.net/java/ref/type>
+                <http://www.interition.net/sparqlycode/id/java/lang/String> .
