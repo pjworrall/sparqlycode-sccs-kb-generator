@@ -2,10 +2,13 @@ package net.interition.sparqlycode.sccs.git;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Date;
+import java.util.TimeZone;
 
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.api.errors.NoHeadException;
+import org.eclipse.jgit.lib.PersonIdent;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.lib.Tree;
 import org.eclipse.jgit.lib.TreeEntry;
@@ -53,7 +56,7 @@ public class JGitExplorer {
 			
 			System.out.println(activity + " a prov:Activity .");
 			
-			DateTime dt = new DateTime(commit.getCommitTime() * 1000);
+			DateTime dt = new DateTime(commit.getAuthorIdent().getWhen());
 			
 			DateTimeFormatter formater = new DateTimeFormatterBuilder()
 			 .appendYear(4,4)
@@ -67,10 +70,12 @@ public class JGitExplorer {
 		     .appendMinuteOfHour(2)
 		     .appendLiteral(':')
 		     .appendSecondOfMinute(2)
+		     .appendTimeZoneOffset(null, true, 3, 3)
 		     .toFormatter();
 			
 			String date = dt.toString(formater);
 			
+			System.out.println("commit time in seconds since epoch: " + commit.getCommitTime());
 			System.out.println(activity + " prov:generatedAtTime " + "\"" + date + "\"^^xsd:dateTime");
 			
 			System.out.println(commit.getFullMessage());
@@ -90,11 +95,11 @@ public class JGitExplorer {
 	        treeWalk.addTree(tree);
 	        treeWalk.setRecursive(true);
 	        while (treeWalk.next()) {
-	            System.out.println("found: " + treeWalk.getPathString());
+	            //System.out.println("found: " + treeWalk.getPathString());
 	        }
 					
 			// debug
-			System.exit(1);
+			//System.exit(1);
 			
 			//System.out.println(commit.getCommitterIdent().getName());
 			//System.out.println(commit.getCommitterIdent().getEmailAddress());

@@ -24,7 +24,6 @@ import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.sparql.vocabulary.FOAF;
-import com.hp.hpl.jena.vocabulary.RDF;
 import com.hp.hpl.jena.vocabulary.RDFS;
 
 import net.interition.sparlycode.model.PROVO;
@@ -134,8 +133,7 @@ public class SccsServiceForGitImpl implements SccsService {
 
 			// add a property (nothing appears in the model until a property is
 			// applied)
-			commitResource.addProperty(RDFS.label,
-					model.createTypedLiteral(commit.getName()));
+			commitResource.addProperty(RDFS.label,commit.getName());
 
 			// create an association with each controlled artefact (file)
 			RevTree tree = commit.getTree();
@@ -151,7 +149,7 @@ public class SccsServiceForGitImpl implements SccsService {
 				// relate the prov:Entity to the commit
 				commitResource.addProperty(PROVO.used, fileResource);
 				
-				DateTime dt = new DateTime(commit.getCommitTime() * 1000);
+				DateTime dt = new DateTime(commit.getAuthorIdent().getWhen());
 				
 				DateTimeFormatter formater = new DateTimeFormatterBuilder()
 				 .appendYear(4,4)
@@ -165,6 +163,7 @@ public class SccsServiceForGitImpl implements SccsService {
 			     .appendMinuteOfHour(2)
 			     .appendLiteral(':')
 			     .appendSecondOfMinute(2)
+			     .appendTimeZoneOffset(null, true, 3, 3)
 			     .toFormatter();
 				
 				String date = dt.toString(formater);

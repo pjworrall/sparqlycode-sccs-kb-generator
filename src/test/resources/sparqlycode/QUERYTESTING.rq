@@ -1,8 +1,12 @@
-# This checks for the existence of Git commits represented as prov:Activity types
+# This checks for the existence of prov:wasAssociatedWith on prov:Activity types
 
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
 
-SELECT * WHERE {
-	?commit a  prov:Activity .
+SELECT ?_commit ?authorName ?authorEmail where {
+#ASK WHERE {
+	?_commit a  prov:Activity .
+	?_commit prov:wasAssociatedWith ?_person .
+	?person foaf:name ?authorName ; foaf:mbox ?authorEmail .
 }
