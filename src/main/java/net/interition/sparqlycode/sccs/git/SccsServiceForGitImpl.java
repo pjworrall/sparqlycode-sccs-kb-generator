@@ -148,8 +148,7 @@ public class SccsServiceForGitImpl implements SccsService {
 			while (treeWalk.next()) {
 				
 				// make each file a prov:Entity
-				Resource fileResource = model.createResource(prefix + "group_identifier/"
-						+ treeWalk.getPathString());
+				Resource fileResource = model.createResource(prefix + treeWalk.getPathString());
 				fileResource.addProperty(RDF.type, PROVO.Entity);
 				
 				// relate the prov:Entity to the commit
@@ -174,7 +173,7 @@ public class SccsServiceForGitImpl implements SccsService {
 				String date = dt.toString(formater);
 								
 				// need to find out how to specify type like time..this isn't correct
-				commitResource.addProperty(PROVO.endedAtTime, date);
+				commitResource.addProperty(PROVO.endedAtTime, model.createTypedLiteral(date, "xsd:dateTime"));
 				
 			}
 
@@ -194,7 +193,7 @@ public class SccsServiceForGitImpl implements SccsService {
 	 */
 	private String buildPrefix(String global, String sccs, String project) {
 
-		return this.prefix = global + "/" + sccs + "/" + project + "/";
+		return this.prefix = global + "/" + sccs + "/" + project.replace('.', '/') + "/";
 
 	}
 

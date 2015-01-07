@@ -1,0 +1,13 @@
+# This checks that prov:Activity  prov:endedAtTime properties are of type xsd:dateTime
+
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+ASK {
+#SELECT ?time  (datatype(?time) as ?datatype) {
+	?commit a  prov:Activity .
+	?commit prov:endedAtTime ?time .
+	filter (datatype(?time) = xsd:dateTime)
+}

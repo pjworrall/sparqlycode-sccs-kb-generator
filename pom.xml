@@ -6,7 +6,7 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<name>GIT SCCS Sparqlycode</name>
 	<description>Produces a W3C PROV compliant RDF representation of a Git repository</description>
-
+	<packaging>jar</packaging>
 	<properties>
 		<sparqlycode.lib>${env.SPARQLYCODE_HOME}/lib</sparqlycode.lib>
 		<subpackage>net.interition.sparqlycode</subpackage>
