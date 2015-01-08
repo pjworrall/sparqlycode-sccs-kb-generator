@@ -54,27 +54,6 @@ public class SccsServiceForGitImpl implements SccsService {
 	// create an empty Jena Model
 	private Model model = ModelFactory.createDefaultModel();
 
-	public String createArtefactUriAsString() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public String createArtefactUriAsString(String globalName,
-			String projectName) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public URI createArtefactUri() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public URI createArtefactUri(String globalName, String projectName) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 	public void publishSCforHead(File out) throws Exception {
 		try {
 			generateRDF(out);
