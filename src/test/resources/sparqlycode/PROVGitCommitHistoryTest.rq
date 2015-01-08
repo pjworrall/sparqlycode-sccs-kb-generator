@@ -18,14 +18,11 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX prov: <http://www.w3.org/ns/prov#>
 PREFIX foaf: <http://xmlns.com/foaf/0.1/>
 
-#SELECT ?_commit ?_parentCommit ?ParentCommit WHERE {
+#SELECT ?_commit  WHERE {
 ASK WHERE {
-	?_commit rdfs:label "6d769b3dc9ca0ec5f2aa844444a679de29fda0d2"  .
 	
-	?_commit  prov:wasInformedBy ?_parentCommit .
+	<http://www.interition.net/sccs/git/net/interition/sparqlycode/testsuite/commit/6d769b3dc9ca0ec5f2aa844444a679de29fda0d2>
+	  prov:wasInformedBy 
+	<http://www.interition.net/sccs/git/net/interition/sparqlycode/testsuite/commit/322e5e12705c7177cf8a0d45f67f452ceb1736e9> .
 	
-	?_parentCommit rdfs:label ?ParentCommit .
-	
-	filter(?ParentCommit = "322e5e12705c7177cf8a0d45f67f452ceb1736e9" )
-
 }

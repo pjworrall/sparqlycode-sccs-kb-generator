@@ -133,7 +133,7 @@ public class SccsServiceForGitImpl implements SccsService {
 
 			// add a property (nothing appears in the model until a property is
 			// applied)
-			commitResource.addProperty(RDFS.label,commit.getName());
+			commitResource.addProperty(RDFS.label,commit.getShortMessage());
 
 			// create an association with each controlled artefact (file)
 			RevTree tree = commit.getTree();
@@ -190,13 +190,11 @@ public class SccsServiceForGitImpl implements SccsService {
 					Resource parentResource = model.createResource(prefix + "commit/"
 							+ parent.getName(), PROVO.Activity);
 					/* Again, duplication but no harm done, would rather keep consistent at the moment */
-					parentResource.addProperty(RDFS.label,parent.getName());
+					parentResource.addProperty(RDFS.label,parent.getShortMessage());
 					
 					commitResource.addProperty(PROVO.wasInformedBy, parentResource);
 					
 				}
-				
-				
 				
 			}
 
