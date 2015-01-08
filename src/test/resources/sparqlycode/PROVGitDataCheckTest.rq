@@ -1,0 +1,24 @@
+# This checks that data values are as expected. The test relies on a SCCS GIT KB of a known git project.
+# Values here are from using git commands against this project - sparqlycode-test-suite
+# this uses the "Initial Commit" record:
+#
+# commit 322e5e12705c7177cf8a0d45f67f452ceb1736e9
+# Author: Sparqlycode Software Knowledge Base <sparqlycode@ns3324759.ip-176-31-182.eu>
+# Date:   Wed Jul 30 18:34:15 2014 +0200
+#
+#    Initial commit
+
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+
+SELECT ?Commit ?Email ?Time WHERE {
+#ASK WHERE {
+	#?commit rdfs:label "322e5e12705c7177cf8a0d45f67f452ceb1736e9" .
+	
+	?commit rdfs:label ?Commit ;prov:wasAssociatedWith ?_author ; prov:endedAtTime ?Time .
+	?_author foaf:mbox ?Email .
+	
+	#filter(?time = "2014-07-30T18:34:15"^^<xsd:dateTime> )
+
+}

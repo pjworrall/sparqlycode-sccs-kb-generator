@@ -177,9 +177,26 @@ public class SccsServiceForGitImpl implements SccsService {
 				Resource author = model.createResource("mailto:" + authorEmail, PROVO.Person );
 				commitResource.addProperty(PROVO.wasAssociatedWith, author);
 				
-				// MAdd some foaf properties to the author			
+				// Add some foaf properties to the author			
 				author.addProperty(FOAF.name, commit.getAuthorIdent().getName());
 				author.addProperty(FOAF.mbox, authorEmail);
+				
+				// get the parent commit and associate with prov:wasInformedBy
+				for( RevCommit parent : commit.getParents() ) {
+					/* We are going to create a Resource for the parent although it is likely to already exist.
+					this is done on the basis that duplicates are assumed to be ignored and it would only be a
+					performance and memory efficiency issue rather than an integrity problem */
+					
+					Resource parentResource = model.createResource(prefix + "commit/"
+							+ parent.getName(), PROVO.Activity);
+					/* Again, duplication but no harm done, would rather keep consistent at the moment */
+					parentResource.addProperty(RDFS.label,parent.getName());
+					
+					commitResource.addProperty(PROVO.wasInformedBy, parentResource);
+					
+				}
+				
+				
 				
 			}
 

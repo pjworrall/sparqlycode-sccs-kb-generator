@@ -1,0 +1,31 @@
+# This checks that the commit history hierarchy is correct. The test relies on a SCCS GIT KB of a known git project.
+# Values here are from using git commands against this project - sparqlycode-test-suite
+# this uses the "Initial Commit" and "adding readme file, I hope" records:
+#
+# commit 322e5e12705c7177cf8a0d45f67f452ceb1736e9
+# Author: Sparqlycode Software Knowledge Base <sparqlycode@ns3324759.ip-176-31-182.eu>
+# Date:   Wed Jul 30 18:34:15 2014 +0200
+#
+#    Initial commit
+#
+# commit 6d769b3dc9ca0ec5f2aa844444a679de29fda0d2
+#Author: Paul Worrall <paul.worrall@interition.net>
+#Date:   Wed Jul 30 18:41:39 2014 +0200
+#
+#    adding readme file, I hope
+
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+
+#SELECT ?_commit ?_parentCommit ?ParentCommit WHERE {
+ASK WHERE {
+	?_commit rdfs:label "6d769b3dc9ca0ec5f2aa844444a679de29fda0d2"  .
+	
+	?_commit  prov:wasInformedBy ?_parentCommit .
+	
+	?_parentCommit rdfs:label ?ParentCommit .
+	
+	filter(?ParentCommit = "322e5e12705c7177cf8a0d45f67f452ceb1736e9" )
+
+}
