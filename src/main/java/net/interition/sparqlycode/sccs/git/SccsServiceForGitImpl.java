@@ -1,19 +1,14 @@
 package net.interition.sparqlycode.sccs.git;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.net.URI;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.eclipse.jgit.api.Git;
-import org.eclipse.jgit.api.errors.GitAPIException;
-import org.eclipse.jgit.api.errors.NoHeadException;
+import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevTree;
+import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import org.eclipse.jgit.treewalk.TreeWalk;
 import org.joda.time.DateTime;
@@ -30,21 +25,23 @@ import net.interition.sparlycode.model.PROVO;
 import net.interition.sparqlycode.sccs.SccsService;
 
 /**
- * @author pjworrall
  * 
- *         This class needs to be immutable so the arguments should be set by
- *         the constructor and not from setters
- * 
- *         I think that some behaviour needs to be abstracted and put into a
- *         superclass before we build the subversion publisher
+ * @author Paul Worrall
  * 
  */
-public class SccsServiceForGitImpl implements SccsService {
+public class SccsServiceForGitImpl extends RDFServices implements SccsService {
 
 	private final Log logger = LogFactory.getLog(SccsServiceForGitImpl.class);
 
 	private String prefix;
 	private String sccsProjectRootFolder;
+
+	private final DateTimeFormatter formater = new DateTimeFormatterBuilder()
+			.appendYear(4, 4).appendLiteral('-').appendMonthOfYear(2)
+			.appendLiteral('-').appendDayOfMonth(2).appendLiteral('T')
+			.appendHourOfDay(2).appendLiteral(':').appendMinuteOfHour(2)
+			.appendLiteral(':').appendSecondOfMinute(2)
+			.appendTimeZoneOffset(null, true, 3, 3).toFormatter();
 
 	public SccsServiceForGitImpl(String project, String folder) {
 		this.sccsProjectRootFolder = folder;
@@ -80,39 +77,30 @@ public class SccsServiceForGitImpl implements SccsService {
 		FileRepositoryBuilder builder = new FileRepositoryBuilder();
 		Repository repository = null;
 		try {
-			repository = builder
-					.setGitDir(new File(this.sccsProjectRootFolder + "/.git"))
-					.readEnvironment() // scan environment GIT_* variable
-					.findGitDir() // scan up the file system tree
-					.build();
+			repository = builder.setGitDir(
+					new File(this.sccsProjectRootFolder + "/.git")).build();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			throw new Exception(e);
 		}
 
-		Git git = new Git(repository);
-		Iterable<RevCommit> log;
-		try {
-			log = git.log().call();
-		} catch (NoHeadException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			throw new Exception(e);
-		} catch (GitAPIException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			throw new Exception(e);
-		}
+		RevWalk walk = new RevWalk(repository);
 
-		for (RevCommit commit : log) {
+		Ref from = repository.getRef("refs/tags/jena-2.11.2");
+		Ref to = repository.getRef("refs/tags/jena-2.11.1");
+
+		walk.markStart(walk.parseCommit(from.getObjectId()));
+		walk.markUninteresting(walk.parseCommit(to.getObjectId()));
+
+		for (RevCommit commit : walk) {
 			// create an RDF Resource for a Commit
 			Resource commitResource = model.createResource(prefix + "commit/"
 					+ commit.getName(), PROVO.Activity);
 
 			// add a property (nothing appears in the model until a property is
 			// applied)
-			commitResource.addProperty(RDFS.label,commit.getShortMessage());
+			commitResource.addProperty(RDFS.label, commit.getShortMessage());
 
 			// create an association with each controlled artefact (file)
 			RevTree tree = commit.getTree();
@@ -120,64 +108,48 @@ public class SccsServiceForGitImpl implements SccsService {
 			TreeWalk treeWalk = new TreeWalk(repository);
 			treeWalk.addTree(tree);
 			treeWalk.setRecursive(true);
+			
 			while (treeWalk.next()) {
-				
+
 				// make each file a prov:Entity
-				Resource fileResource = model.createResource(prefix + treeWalk.getPathString(), PROVO.Entity);
-				
+				Resource fileResource = model.createResource(
+						prefix + treeWalk.getPathString(), PROVO.Entity);
+
 				// relate the prov:Entity to the commit
 				commitResource.addProperty(PROVO.used, fileResource);
-				
+
 				DateTime dt = new DateTime(commit.getAuthorIdent().getWhen());
-				
-				DateTimeFormatter formater = new DateTimeFormatterBuilder()
-				 .appendYear(4,4)
-				 .appendLiteral('-')
-			     .appendMonthOfYear(2)
-			     .appendLiteral('-')
-			     .appendDayOfMonth(2)
-			     .appendLiteral('T')
-			     .appendHourOfDay(2)
-			     .appendLiteral(':')
-			     .appendMinuteOfHour(2)
-			     .appendLiteral(':')
-			     .appendSecondOfMinute(2)
-			     .appendTimeZoneOffset(null, true, 3, 3)
-			     .toFormatter();
-				
+
 				String date = dt.toString(formater);
-								
-				// need to find out how to specify type like time..this isn't correct
-				commitResource.addProperty(PROVO.endedAtTime, model.createTypedLiteral(date, "xsd:dateTime"));
-				
-				// create an Author for the Activity and associate them with prov:wasAssociatedWith
-				// TODO: apparently getAuthorIdent.getEMailAddress is expensive so in future authors should be cached and reused
-				String authorEmail = commit.getAuthorIdent().getEmailAddress() ;
-				Resource author = model.createResource("mailto:" + authorEmail, PROVO.Person );
+
+				commitResource.addProperty(PROVO.endedAtTime,
+						model.createTypedLiteral(date, "xsd:dateTime"));
+
+				String authorEmail = commit.getAuthorIdent().getEmailAddress();
+				Resource author = model.createResource("mailto:" + authorEmail,
+						PROVO.Person);
 				commitResource.addProperty(PROVO.wasAssociatedWith, author);
-				
-				// Add some foaf properties to the author			
+
+				// Add some foaf properties to the author
 				author.addProperty(FOAF.name, commit.getAuthorIdent().getName());
 				author.addProperty(FOAF.mbox, authorEmail);
-				
+
 				// get the parent commit and associate with prov:wasInformedBy
-				for( RevCommit parent : commit.getParents() ) {
-					/* We are going to create a Resource for the parent although it is likely to already exist.
-					this is done on the basis that duplicates are assumed to be ignored and it would only be a
-					performance and memory efficiency issue rather than an integrity problem */
-					
-					Resource parentResource = model.createResource(prefix + "commit/"
-							+ parent.getName(), PROVO.Activity);
-					/* Again, duplication but no harm done, would rather keep consistent at the moment */
-					parentResource.addProperty(RDFS.label,parent.getShortMessage());
-					
-					commitResource.addProperty(PROVO.wasInformedBy, parentResource);
+				for (RevCommit parent : commit.getParents()) {
+
+					Resource parentResource = model.createResource(prefix
+							+ "commit/" + parent.getName(), PROVO.Activity);
+
+					commitResource.addProperty(PROVO.wasInformedBy,
+							parentResource);
 					
 				}
-				
+
 			}
 
 		}
+
+		walk.dispose();
 
 		repository.close();
 
@@ -193,33 +165,9 @@ public class SccsServiceForGitImpl implements SccsService {
 	 */
 	private String buildPrefix(String global, String sccs, String project) {
 
-		return this.prefix = global + "/" + sccs + "/" + project.replace('.', '/') + "/";
+		return this.prefix = global + "/" + sccs + "/"
+				+ project.replace('.', '/') + "/";
 
-	}
-
-	/**
-	 * 
-	 * Writes out the RDF as Turtle
-	 * 
-	 * This is a common activity resulting in duplication. SHould find some
-	 * utility pattern for this and factor it.
-	 * 
-	 * @param model
-	 * @throws Exception
-	 */
-	private void writeRdf(Model model, File out) throws Exception {
-		try {
-
-			FileWriter fw = new FileWriter(out.getAbsoluteFile());
-			BufferedWriter bw = new BufferedWriter(fw);
-
-			model.write(bw, "TURTLE");
-			bw.close();
-
-		} catch (IOException e) {
-			e.printStackTrace();
-			throw new Exception("Error writing out turtle file ");
-		}
 	}
 
 }

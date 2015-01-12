@@ -12,10 +12,12 @@
 
     <logger name="org.apache.jena">
         <level value="WARN"/>
+        <appender-ref ref="CONSOLE"/>
     </logger>
    
     <logger name="net.interition.sparqlycode">
         <level value="DEBUG"/>
+        <appender-ref ref="CONSOLE"/>
     </logger>
 
     <root>
