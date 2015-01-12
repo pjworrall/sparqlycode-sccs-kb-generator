@@ -10,6 +10,9 @@ import net.interition.sparqlycode.sccs.git.SccsServiceForGitImpl;
  * 
  * it needs to process command line argument:
  * the type of SCCS - Git or Svn (Only Git supported at the moment)
+ * the Tag where the commits should be processed from
+ * the Tag where the commits should stop being processed
+ * 
  * the project identifier (eg. group and artifact id of the project )
  * the directory where the sccs repository exist (only local repo's at the moment)
  * a filename for the output ttl file
@@ -23,23 +26,27 @@ public class SccsPublish {
 		SccsPublish publisher = new SccsPublish();
 
 		String sccs = "";
+		String startTag = "";
+		String endTag = "";
 		String identifier = "IDENTIFIER-NOT-PROVIDED";
 		String directory = ".";
 		String filename = "";
 
-		if (args.length == 4) {
+		if (args.length == 6) {
 			sccs = args[0];
-			identifier = args[1];
-			directory = args[2];
-			filename = args[3] + ".ttl";
+			endTag = args[1];
+			startTag = args[2];
+			identifier = args[3];
+			directory = args[4];
+			filename = args[5] + ".ttl";
 		} else {
 			System.out
-					.println("usage: SccsPublish sccs identifier directory-path filename");
+					.println("usage: SccsPublish sccs-type range-start range-end uri-prefix sccs-dir outputfile");
 			System.exit(1);
 		}
 
 		if (sccs.equalsIgnoreCase("GIT")) {
-			publisher.gitPublisher(identifier, directory, filename);
+			publisher.gitPublisher(startTag, endTag, identifier, directory, filename);
 		} else {
 			System.out.println("sccs type: only support GIT currently");
 			System.exit(1);
@@ -47,7 +54,7 @@ public class SccsPublish {
 
 	}
 
-	private void gitPublisher(String identifier, String directory,
+	private void gitPublisher(String startTag, String endTag, String identifier, String directory,
 			String filename) {
 
 		SccsService service = new SccsServiceForGitImpl(identifier, directory);
@@ -65,9 +72,9 @@ public class SccsPublish {
 		}
 
 		try {
-			service.publishSCforHead(file);
+			service.publishSCforTag(file, startTag, endTag);;
 		} catch (Exception e) {
-			System.out.println("Error encountered publishing SC for HEAD");
+			System.out.println("Error encountered publishing SC");
 			e.printStackTrace();
 			System.exit(2);
 		}

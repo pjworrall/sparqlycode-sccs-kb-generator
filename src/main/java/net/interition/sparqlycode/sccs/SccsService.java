@@ -1,10 +1,9 @@
 package net.interition.sparqlycode.sccs;
 
 import java.io.File;
-import java.net.URI;
 
 /**
- * @author pjworrall
+ * @author Paul Worrall
  *
  */
 public interface SccsService {
@@ -13,6 +12,6 @@ public interface SccsService {
 	
 	public void publishSCforBranch(String branchName, File out) throws Exception;
 	
-	public void publishSCforTag(String tagName, File out) throws Exception;
+	public void publishSCforTag(File out, String startTag, String endTag) throws Exception;
 
 }

@@ -2,6 +2,7 @@ package net.interition.sparqlycode.sccs.git;
 
 import java.io.File;
 import java.io.IOException;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.jgit.lib.Ref;
@@ -51,9 +52,15 @@ public class SccsServiceForGitImpl extends RDFServices implements SccsService {
 	// create an empty Jena Model
 	private Model model = ModelFactory.createDefaultModel();
 
+	/*
+	 * Produces SC SCCS KB from the current Git HEAD to the last HEAD ??? ph*# or something dunno
+	 * 
+	 * (non-Javadoc)
+	 * @see net.interition.sparqlycode.sccs.SccsService#publishSCforHead(java.io.File)
+	 */
 	public void publishSCforHead(File out) throws Exception {
 		try {
-			generateRDF(out);
+			generateRDF(out,"HEAD^","HEAD");
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -61,19 +68,35 @@ public class SccsServiceForGitImpl extends RDFServices implements SccsService {
 		}
 
 	}
-
+	/*
+	 * Publishes SC SCCS KB for all Git commit between two Tags
+	 * 
+	 * (non-Javadoc)
+	 * @see net.interition.sparqlycode.sccs.SccsService#publishSCforBranch(java.lang.String, java.io.File)
+	 */
 	public void publishSCforBranch(String branchName, File out) {
 		// TODO Auto-generated method stub
 
 	}
 
-	public void publishSCforTag(String tagName, File out) {
-		// TODO Auto-generated method stub
+	public void publishSCforTag(File out, String startTag, String endTag) throws Exception {
+		try {
+			generateRDF(out,startTag,endTag);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new Exception(e);
+		}
 
 	}
 
-	private void generateRDF(File out) throws Exception {
-
+	private void generateRDF(File out, String startTag, String endTag) throws Exception {
+		
+		// to use the tag ranges there is going to have to be some checks that they are valid
+		// git log --pretty=oneline refs/tags/jena-2.11.0..refs/tags/jena-2.11.2
+		 //startTag = "refs/tags/jena-2.11.2" ;
+		// endTag = "refs/tags/jena-2.11.1" ;
+		
+		
 		FileRepositoryBuilder builder = new FileRepositoryBuilder();
 		Repository repository = null;
 		try {
@@ -86,10 +109,12 @@ public class SccsServiceForGitImpl extends RDFServices implements SccsService {
 		}
 
 		RevWalk walk = new RevWalk(repository);
+		
+		Ref from = repository.getRef(startTag);
+		Ref to = repository.getRef(endTag);
 
-		Ref from = repository.getRef("refs/tags/jena-2.11.2");
-		Ref to = repository.getRef("refs/tags/jena-2.11.1");
-
+		logger.debug("walk from: " + startTag + " , to " + endTag);
+		
 		walk.markStart(walk.parseCommit(from.getObjectId()));
 		walk.markUninteresting(walk.parseCommit(to.getObjectId()));
 
