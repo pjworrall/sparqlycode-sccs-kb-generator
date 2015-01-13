@@ -44,23 +44,27 @@ public class SccsServiceForGitImpl extends RDFServices implements SccsService {
 			.appendLiteral(':').appendSecondOfMinute(2)
 			.appendTimeZoneOffset(null, true, 3, 3).toFormatter();
 
+	// create an empty Jena Model
+	private Model model = ModelFactory.createDefaultModel();
+
 	public SccsServiceForGitImpl(String project, String folder) {
 		this.sccsProjectRootFolder = folder;
 		buildPrefix("http://www.interition.net/sccs", "git", project);
 	}
 
-	// create an empty Jena Model
-	private Model model = ModelFactory.createDefaultModel();
-
 	/*
-	 * Produces SC SCCS KB from the current Git HEAD to the last HEAD ??? ph*# or something dunno
+	 * Produces SC SCCS KB from the current Git HEAD to the last HEAD ??? ph*#
+	 * or something dunno
 	 * 
 	 * (non-Javadoc)
-	 * @see net.interition.sparqlycode.sccs.SccsService#publishSCforHead(java.io.File)
+	 * 
+	 * @see
+	 * net.interition.sparqlycode.sccs.SccsService#publishSCforHead(java.io.
+	 * File)
 	 */
 	public void publishSCforHead(File out) throws Exception {
 		try {
-			generateRDF(out,"HEAD^","HEAD");
+			generateRDF(out, "HEAD^", "HEAD");
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -68,20 +72,25 @@ public class SccsServiceForGitImpl extends RDFServices implements SccsService {
 		}
 
 	}
+
 	/*
 	 * Publishes SC SCCS KB for all Git commit between two Tags
 	 * 
 	 * (non-Javadoc)
-	 * @see net.interition.sparqlycode.sccs.SccsService#publishSCforBranch(java.lang.String, java.io.File)
+	 * 
+	 * @see
+	 * net.interition.sparqlycode.sccs.SccsService#publishSCforBranch(java.lang
+	 * .String, java.io.File)
 	 */
 	public void publishSCforBranch(String branchName, File out) {
 		// TODO Auto-generated method stub
 
 	}
 
-	public void publishSCforTag(File out, String startTag, String endTag) throws Exception {
+	public void publishSCforTag(File out, String startTag, String endTag)
+			throws Exception {
 		try {
-			generateRDF(out,startTag,endTag);
+			generateRDF(out, startTag, endTag);
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new Exception(e);
@@ -89,14 +98,15 @@ public class SccsServiceForGitImpl extends RDFServices implements SccsService {
 
 	}
 
-	private void generateRDF(File out, String startTag, String endTag) throws Exception {
-		
-		// to use the tag ranges there is going to have to be some checks that they are valid
+	private void generateRDF(File out, String startTag, String endTag)
+			throws Exception {
+
+		// to use the tag ranges there is going to have to be some checks that
+		// they are valid
 		// git log --pretty=oneline refs/tags/jena-2.11.0..refs/tags/jena-2.11.2
-		 //startTag = "refs/tags/jena-2.11.2" ;
+		// startTag = "refs/tags/jena-2.11.2" ;
 		// endTag = "refs/tags/jena-2.11.1" ;
-		
-		
+
 		FileRepositoryBuilder builder = new FileRepositoryBuilder();
 		Repository repository = null;
 		try {
@@ -109,19 +119,19 @@ public class SccsServiceForGitImpl extends RDFServices implements SccsService {
 		}
 
 		RevWalk walk = new RevWalk(repository);
-		
+
 		Ref from = repository.getRef(startTag);
 		Ref to = repository.getRef(endTag);
 
 		logger.debug("walk from: " + startTag + " , to " + endTag);
-		
+
 		walk.markStart(walk.parseCommit(from.getObjectId()));
 		walk.markUninteresting(walk.parseCommit(to.getObjectId()));
 
 		for (RevCommit commit : walk) {
 			// create an RDF Resource for a Commit
-			Resource commitResource = model.createResource(prefix + "commit/"
-					+ commit.getName(), PROVO.Activity);
+			Resource commitResource = model.createResource(
+					prefix + commit.getName(), PROVO.Activity);
 
 			// add a property (nothing appears in the model until a property is
 			// applied)
@@ -133,12 +143,12 @@ public class SccsServiceForGitImpl extends RDFServices implements SccsService {
 			TreeWalk treeWalk = new TreeWalk(repository);
 			treeWalk.addTree(tree);
 			treeWalk.setRecursive(true);
-			
+
 			while (treeWalk.next()) {
 
 				// make each file a prov:Entity
 				Resource fileResource = model.createResource(
-						prefix + treeWalk.getPathString(), PROVO.Entity);
+						prefix + treeWalk.getPathString().replace('/', '.'), PROVO.Entity);
 
 				// relate the prov:Entity to the commit
 				commitResource.addProperty(PROVO.used, fileResource);
@@ -163,11 +173,11 @@ public class SccsServiceForGitImpl extends RDFServices implements SccsService {
 				for (RevCommit parent : commit.getParents()) {
 
 					Resource parentResource = model.createResource(prefix
-							+ "commit/" + parent.getName(), PROVO.Activity);
+							+ parent.getName(), PROVO.Activity);
 
 					commitResource.addProperty(PROVO.wasInformedBy,
 							parentResource);
-					
+
 				}
 
 			}
@@ -190,8 +200,14 @@ public class SccsServiceForGitImpl extends RDFServices implements SccsService {
 	 */
 	private String buildPrefix(String global, String sccs, String project) {
 
-		return this.prefix = global + "/" + sccs + "/"
-				+ project.replace('.', '/') + "/";
+		this.prefix = global + "/" + sccs + "/" + project + "/";
+
+		model.setNsPrefix("", prefix);
+
+		model.setNsPrefix("foaf", FOAF.getURI());
+		model.setNsPrefix("prov", PROVO.getURI());
+
+		return this.prefix;
 
 	}
 

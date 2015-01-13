@@ -1,0 +1,15 @@
+# Example showing commits and those that did them, and the time made
+
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+
+SELECT ?_commit ?Time ?Name  where {
+#ASK WHERE {
+	?_commit prov:used <http://www.interition.net/sccs/git/org.apache.activemq.activemq-client.src.main.java.org.apache.activemq.transport.tcp.TcpBufferedInputStream.java> .
+	?_commit prov:wasAssociatedWith ?_person ; prov:endedAtTime ?Time .
+	?_person foaf:name ?Name .
+}
+GROUP BY ?Name ?Time ?_commit
+ORDER BY ?Name
+LIMIT 500

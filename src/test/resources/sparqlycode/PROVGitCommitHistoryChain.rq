@@ -6,7 +6,7 @@ PREFIX foaf: <http://xmlns.com/foaf/0.1/>
 
 SELECT ?Commit ?ParentCommit  WHERE {
 #ASK WHERE {
-	<http://www.interition.net/sccs/git/net/interition/sparqlycode/testsuite/commit/6d769b3dc9ca0ec5f2aa844444a679de29fda0d2>
+	<http://www.interition.net/sccs/git/net.interition.sparqlycode.testsuite/6d769b3dc9ca0ec5f2aa844444a679de29fda0d2>
 	  prov:wasInformedBy ?_parentCommit ; rdfs:label ?Commit .
 	
 	?_parentCommit rdfs:label ?ParentCommit .

@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.interition</groupId>
 	<artifactId>sccs.git</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.3-SNAPSHOT</version>
 	<name>GIT SCCS Sparqlycode</name>
 	<description>Produces a W3C PROV compliant RDF representation of a Git repository</description>
 	<packaging>jar</packaging>
