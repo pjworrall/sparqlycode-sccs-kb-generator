@@ -2,21 +2,19 @@
 # Values here are from using git commands against this project - sparqlycode-test-suite
 # this uses the "Initial Commit" record:
 #
-# commit 322e5e12705c7177cf8a0d45f67f452ceb1736e9
-# Author: Sparqlycode Software Knowledge Base <sparqlycode@ns3324759.ip-176-31-182.eu>
-# Date:   Wed Jul 30 18:34:15 2014 +0200
-#
-#    Initial commit
+#commit 5b076fe1b151119c844fa0c5c4365c5da2c7efd9
+#Author: adamnogradi <adam.nogradi@interition.net>
+#Date:   Wed Nov 19 09:51:17 2014 +0000
+#   Corrected failing test
 
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX prov: <http://www.w3.org/ns/prov#>
 PREFIX foaf: <http://xmlns.com/foaf/0.1/>
 
-SELECT ?Commit ?Email ?Time WHERE {
+SELECT ?Message ?Email ?Time WHERE {
 #ASK WHERE {
-	#?commit rdfs:label "322e5e12705c7177cf8a0d45f67f452ceb1736e9" .
-	
-	?commit rdfs:label ?Commit ;prov:wasAssociatedWith ?_author ; prov:endedAtTime ?Time .
+	<http://www.interition.net/sccs/git/net.interition.sparqlycode.testsuite/5b076fe1b151119c844fa0c5c4365c5da2c7efd9> 
+	     rdfs:label ?Message ; prov:wasAssociatedWith ?_author ; prov:endedAtTime ?Time .
 	?_author foaf:mbox ?Email .
 	
 	#filter(?time = "2014-07-30T18:34:15"^^<xsd:dateTime> )

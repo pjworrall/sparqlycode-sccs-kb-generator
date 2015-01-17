@@ -1,14 +1,8 @@
-# This is just for checkign queries. don't have high expectations of what was previously in here
-
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX prov: <http://www.w3.org/ns/prov#>
 PREFIX foaf: <http://xmlns.com/foaf/0.1/>
 
-SELECT ?Commit ?ParentCommit  WHERE {
-#ASK WHERE {
-	
-	 <http://www.interition.net/sccs/git/net/interition/sparqlycode/testsuite/commit/820218802a6e66f3acb4ad35a8daeb1f001590ff>
-	      prov:wasInformedBy ?_parentCommit ; rdfs:label ?Commit .
-	 ?_parentCommit rdfs:label ?ParentCommit .
-	
-}
+select * {
+	?commit a  prov:Activity .
+	?commit prov:endedAtTime ?time .
+} limit 10

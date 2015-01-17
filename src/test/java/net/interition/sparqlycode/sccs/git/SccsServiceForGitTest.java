@@ -34,20 +34,24 @@ public class SccsServiceForGitTest {
 	}
 
 	@Test
-	public void testPublishSCforTag() throws Exception  {
+	public void testPublishSCforTag() throws Exception {
+
+		SccsService service = new SccsServiceForGitImpl(
+				"net.interition.sparqlycode.testsuite",
+				"/Users/pjworrall/Documents/Java2RDF/sparqlycode/sparqlycode-test-suite");
+		
+		String startTag = "refs/tags/0.0.1d";
+		String endTag = "refs/tags/0.0.1";
+		
 
 		/*
-		 * SccsService service = new
-		 * SccsServiceForGitImpl("net.interition.sparqlycode.testsuite",
-		 * "/Users/pjworrall/Documents/Java2RDF/sparqlycode/sparqlycode-test-suite"
-		 * );
+		 * SccsService service = new SccsServiceForGitImpl("org.apache.jena",
+		 * "/Users/pjworrall/Documents/sparqlycode/sources/jena");
 		 */
-		SccsService service = new SccsServiceForGitImpl("org.apache.jena",
-				"/Users/pjworrall/Documents/sparqlycode/sources/jena");
 
-		String startTag = "refs/tags/jena-2.11.2" ;
-		String endTag = "refs/tags/jena-2.11.1" ;
-		
+/*		String startTag = "refs/tags/jena-2.11.2";
+		String endTag = "refs/tags/jena-2.11.1";*/
+
 		String gitTtlLoc = System.getProperty("sccs-ttl-loc");
 		String gitTtlName = System.getProperty("sccs-ttl-name");
 
@@ -62,7 +66,7 @@ public class SccsServiceForGitTest {
 			file.createNewFile();
 		}
 
-		service.publishSCforTag(file,startTag,endTag);
+		service.publishSCforTag(file, startTag, endTag);
 
 		fail("Not yet implemented");
 	}
