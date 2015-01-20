@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 import java.io.File;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 
 import net.interition.sparqlycode.sccs.SccsService;
 
@@ -66,7 +67,7 @@ public class SccsServiceForGitTest {
 			file.createNewFile();
 		}
 
-		service.publishSCforTag(file, startTag, endTag);
+		service.publishSCforTag(file, startTag, endTag, new ArrayList<String>());
 
 		fail("Not yet implemented");
 	}

@@ -2,6 +2,8 @@ package net.interition.sparqlycode.sccs.git;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -34,7 +36,8 @@ public class SccsServiceForGitImpl extends RDFServices implements SccsService {
 
 	private final Log logger = LogFactory.getLog(SccsServiceForGitImpl.class);
 
-	private String prefix;
+	private String commitPrefix = "http://www.interition.net/sccs/";
+	private String filePrefix = "file://www.interition.net/sparqlycode/";
 	private String sccsProjectRootFolder;
 
 	private final DateTimeFormatter formater = new DateTimeFormatterBuilder()
@@ -47,9 +50,9 @@ public class SccsServiceForGitImpl extends RDFServices implements SccsService {
 	// create an empty Jena Model
 	private Model model = ModelFactory.createDefaultModel();
 
-	public SccsServiceForGitImpl(String project, String folder) {
+	public SccsServiceForGitImpl(String projectIdentifier, String folder) {
 		this.sccsProjectRootFolder = folder;
-		buildPrefix("http://www.interition.net/sccs", "git", project);
+		buildPrefix("git", projectIdentifier);
 	}
 
 	/*
@@ -62,9 +65,10 @@ public class SccsServiceForGitImpl extends RDFServices implements SccsService {
 	 * net.interition.sparqlycode.sccs.SccsService#publishSCforHead(java.io.
 	 * File)
 	 */
-	public void publishSCforHead(File out) throws Exception {
+	public void publishSCforHead(File out, final List<String> sourceFolders)
+			throws Exception {
 		try {
-			generateRDF(out, "HEAD^", "HEAD");
+			publishSCforTag(out, "HEAD^", "HEAD", sourceFolders);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -74,7 +78,8 @@ public class SccsServiceForGitImpl extends RDFServices implements SccsService {
 	}
 
 	/*
-	 * Publishes SC SCCS KB for all Git commit between two Tags
+	 * Publishes SC SCCS KB for all Git commits from the head of a branch to
+	 * when it was branched
 	 * 
 	 * (non-Javadoc)
 	 * 
@@ -82,24 +87,14 @@ public class SccsServiceForGitImpl extends RDFServices implements SccsService {
 	 * net.interition.sparqlycode.sccs.SccsService#publishSCforBranch(java.lang
 	 * .String, java.io.File)
 	 */
-	public void publishSCforBranch(String branchName, File out) {
+	public void publishSCforBranch(File out, String branchName,
+			final List<String> sourceFolders) {
 		// TODO Auto-generated method stub
 
 	}
 
-	public void publishSCforTag(File out, String startTag, String endTag)
-			throws Exception {
-		try {
-			generateRDF(out, startTag, endTag);
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw new Exception(e);
-		}
-
-	}
-
-	private void generateRDF(File out, String startTag, String endTag)
-			throws Exception {
+	public void publishSCforTag(File out, String startTag, String endTag,
+			final List<String> sourceFolders) throws Exception {
 
 		// to use the tag ranges there is going to have to be some checks that
 		// they are valid
@@ -130,8 +125,8 @@ public class SccsServiceForGitImpl extends RDFServices implements SccsService {
 
 		for (RevCommit commit : walk) {
 			// create an RDF Resource for a Commit
-			Resource commitResource = model.createResource(
-					prefix + commit.getName(), PROVO.Activity);
+			Resource commitResource = model.createResource(commitPrefix
+					+ commit.getName(), PROVO.Activity);
 
 			// add a property (nothing appears in the model until a property is
 			// applied)
@@ -146,9 +141,15 @@ public class SccsServiceForGitImpl extends RDFServices implements SccsService {
 
 			while (treeWalk.next()) {
 
+				// remove the source folder prefix's from Java file paths
+				String path = treeWalk.getPathString();
+				if (path.endsWith(".java")) {
+					path = this.removeSourceRootFromPath(sourceFolders, path);
+				}
+
 				// make each file a prov:Entity
-				Resource fileResource = model.createResource(
-						prefix + treeWalk.getPathString().replace('/', '.'), PROVO.Entity);
+				Resource fileResource = model.createResource(filePrefix + path,
+						PROVO.Entity);
 
 				// relate the prov:Entity to the commit
 				commitResource.addProperty(PROVO.used, fileResource);
@@ -172,7 +173,7 @@ public class SccsServiceForGitImpl extends RDFServices implements SccsService {
 				// get the parent commit and associate with prov:wasInformedBy
 				for (RevCommit parent : commit.getParents()) {
 
-					Resource parentResource = model.createResource(prefix
+					Resource parentResource = model.createResource(commitPrefix
 							+ parent.getName(), PROVO.Activity);
 
 					commitResource.addProperty(PROVO.wasInformedBy,
@@ -194,21 +195,54 @@ public class SccsServiceForGitImpl extends RDFServices implements SccsService {
 
 	/**
 	 * 
-	 * Builds the prefix URI for all subjects
+	 * Builds the commitPrefix URI for all subjects
 	 * 
 	 * @return
 	 */
-	private String buildPrefix(String global, String sccs, String project) {
+	private void buildPrefix(String sccs, String project) {
+		
+		// not using any default prefixes to make sure we can merge easily
+		// model.setNsPrefix("", "http://default/?");
 
-		this.prefix = global + "/" + sccs + "/" + project + "/";
+		// prefix for commits
+		this.commitPrefix = this.commitPrefix + sccs + "/id/" + project + "/";
 
-		model.setNsPrefix("", prefix);
+		// prefix for files
+		this.filePrefix = this.filePrefix + project + "/";
+
+		model.setNsPrefix("sccs", commitPrefix);
+
+		// general prefix setting
 
 		model.setNsPrefix("foaf", FOAF.getURI());
 		model.setNsPrefix("prov", PROVO.getURI());
 
-		return this.prefix;
+	}
 
+	/**
+	 * 
+	 * Absolute file names for Java files need the source folder prefix removed
+	 * This is so file Uri here will be the same as file Uri minted from Java
+	 * code itself The latter has no idea where the source folder is other than
+	 * it HAS to reflect the package and Class name
+	 * 
+	 * @return String
+	 */
+	private String removeSourceRootFromPath(final List<String> roots,
+			String path) {
+
+		// for each root does the path start with it?
+		for (String root : roots) {
+			if (path.startsWith(root)) {
+				logger.debug("with source root: " + path);
+				path = path.replaceFirst(root , "");
+				if(path.startsWith("/")) path =  path.substring(1);
+				logger.debug("without source root: " + path);
+				break;
+			}
+		}
+
+		return path;
 	}
 
 }

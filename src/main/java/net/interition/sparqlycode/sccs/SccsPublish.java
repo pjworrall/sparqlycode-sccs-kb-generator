@@ -2,6 +2,7 @@ package net.interition.sparqlycode.sccs;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import net.interition.sparqlycode.sccs.git.SccsServiceForGitImpl;
 
@@ -72,7 +73,7 @@ public class SccsPublish {
 		}
 
 		try {
-			service.publishSCforTag(file, startTag, endTag);;
+			service.publishSCforTag(file, startTag, endTag, new ArrayList<String>());;
 		} catch (Exception e) {
 			System.out.println("Error encountered publishing SC");
 			e.printStackTrace();

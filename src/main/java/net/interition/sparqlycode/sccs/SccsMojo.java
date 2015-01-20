@@ -2,6 +2,8 @@ package net.interition.sparqlycode.sccs;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import net.interition.sparqlycode.sccs.git.SccsServiceForGitImpl;
 
@@ -42,14 +44,14 @@ public class SccsMojo extends AbstractMojo {
 	/**
 	 * Any unique identifier to add into the minted Uri's
 	 * 
-	 * @parameter expression="${screpo.identifer}" default-value="unspecified"
+	 * @parameter expression="${screpo.identifier}" default-value="unspecified"
 	 */
-	private Object identifer;
+	private Object identifier;
 
 	/**
 	 * The place where commits should start to be processed
 	 * 
-	 * @parameter expression="${screpo.identifer}" default-value="HEAD"
+	 * @parameter expression="${screpo.startTag}" default-value="HEAD"
 	 */
 	private Object startTag;
 
@@ -57,7 +59,7 @@ public class SccsMojo extends AbstractMojo {
 	 * The predecessor commit where processing should stop (It processing from
 	 * most recent backwards)
 	 * 
-	 * @parameter expression="${screpo.identifer}" default-value="HEAD^^^"
+	 * @parameter expression="${screpo.endTag}" default-value="HEAD^^^"
 	 */
 	private Object endTag;
 
@@ -68,14 +70,14 @@ public class SccsMojo extends AbstractMojo {
 
 		getLog().debug(
 				"Parameters - outputfile= " + outputfile
-						+ " , uri identifier= " + identifer + " , message= "
+						+ " , uri identifier= " + identifier + " , message= "
 						+ message + " , startTag= " + startTag + " , endTag= "
 						+ endTag + ", sccs dir= " + project.getBasedir());
 
 		getLog().info(message.toString());
 
 		// this is the identifier to appear in the minted Uri
-		String id = identifer.toString();
+		String id = identifier.toString();
 		// the root of the project where .git will exist
 		String directory = project.getBasedir().toString();
 		String filename = outputfile.toString();
@@ -94,16 +96,43 @@ public class SccsMojo extends AbstractMojo {
 			getLog().error("Error opening file for output.", e);
 			return;
 		}
-
+		
+		// we need the source code roots relative to the project base directory
+		List<String> roots = this.getSourceFolderRoots();
+		
 		try {
 			getLog().info(
 					"calling  service.publishSCforTag() with " + file + " , "
 							+ start + " , " + end);
-			service.publishSCforTag(file, start, end);
+			service.publishSCforTag(file, start, end, roots);
 		} catch (Exception e) {
 			getLog().error("Error encountered publishing SC", e);
 			return;
 		}
 
+	}
+	
+	/**
+	 * 
+	 * The SCCS will have file paths relative to the base of the project.
+	 * Java will resolve packages and source code files relative to source code folders.
+	 * The SCCS API needs to know the source code roots relative to the project base.
+	 * This works them out and returns them in a list (as there can be more than one source code root)
+	 * 
+	 * @return List<String>
+	 */
+	
+	private List<String> getSourceFolderRoots() {
+		@SuppressWarnings("rawtypes")
+		
+		// create a mask using the absolute folder with a trailing /
+		String mask = project.getBasedir().toString() + "/";
+		List<String> roots = new ArrayList<String>();
+		for(Object sourceAbsoluteRoot : project.getCompileSourceRoots() ) {			
+			String relativeSourceRoot = sourceAbsoluteRoot.toString().replace(mask,"");
+			getLog().debug("source root: " + sourceAbsoluteRoot.toString() + " , relative root: " + relativeSourceRoot);
+			roots.add(relativeSourceRoot);
+		}
+		return roots;
 	}
 }
