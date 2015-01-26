@@ -7,12 +7,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.interition.sparqlycode.sccs.SccsService;
+import net.interition.sparqlycode.sccs.sparql.SparqlycodeBaseTest;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class SccsServiceForGitTest {
+public class SccsServiceForGitTest extends SparqlycodeBaseTest {
 
 	String baseDir;
 	
@@ -28,6 +29,8 @@ public class SccsServiceForGitTest {
 	}
 
 	/**
+	 * 
+	 * git log --pretty=oneline HEAD^^^^^..HEAD
 	 * 
 	 * @throws Exception
 	 */
@@ -51,14 +54,25 @@ public class SccsServiceForGitTest {
 		sourceFolders.add(baseDir + "/src/main/java");
 
 		service.publishSCforHead(file, sourceFolders, 5);
+		
+		assertTrue("SCCS KB failed equivelance test for git log --pretty=oneline HEAD^^^^^..HEAD",
+				 sparqlyCodeTest("PublishSCForHeadTest"));
+		
+		// delete file ?
 
-		fail("Not yet implemented");
 	}
 
 	@Test
 	public void testPublishSCforBranch() {
 		fail("Not yet implemented");
 	}
+	
+	/*
+	 * 
+	 * git log --pretty=oneline refs/tags/0.0.1..refs/tags/0.0.2
+	 * 
+	 * 
+	 */
 
 	@Test
 	public void testPublishSCforTag() throws Exception {
@@ -80,11 +94,12 @@ public class SccsServiceForGitTest {
 		service.publishSCforTag(file, startTag, endTag, new ArrayList<String>());
 
 		// run any sparql tests
+		
+		assertTrue("SCCS KB failed equivelance test for git log --pretty=oneline refs/tags/0.0.1..refs/tags/0.0.2",
+				 sparqlyCodeTest("PublishSCForTagTest"));
 
-		// delete file
+		// delete file ?
 
-		// assert
-		fail("Not yet implemented");
 
 	}
 

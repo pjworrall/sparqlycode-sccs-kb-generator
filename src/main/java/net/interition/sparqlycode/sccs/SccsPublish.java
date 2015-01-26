@@ -58,7 +58,13 @@ public class SccsPublish {
 	private void gitPublisher(String startTag, String endTag, String identifier, String directory,
 			String filename) {
 
-		SccsService service = new SccsServiceForGitImpl(identifier, directory);
+		SccsService service;
+		try {
+			service = new SccsServiceForGitImpl(identifier, directory);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			throw new RuntimeException(e);
+		}
 
 		File file = new File(filename);
 		try {
@@ -68,16 +74,13 @@ public class SccsPublish {
 			file.createNewFile();
 		} catch (IOException e) {
 			System.out.println("Error opening file for output.");
-			e.printStackTrace();
 			System.exit(2);
 		}
 
 		try {
-			service.publishSCforTag(file, startTag, endTag, new ArrayList<String>());;
+			service.publishSCforTag(file, startTag, endTag, new ArrayList<String>());
 		} catch (Exception e) {
-			System.out.println("Error encountered publishing SC");
-			e.printStackTrace();
-			System.exit(2);
+			throw new RuntimeException("Error encountered publishing SC",e);
 		}
 
 	}

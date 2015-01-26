@@ -2,11 +2,14 @@ package net.interition.sparqlycode.sccs.git;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.eclipse.jgit.errors.CorruptObjectException;
+import org.eclipse.jgit.errors.IncorrectObjectTypeException;
+import org.eclipse.jgit.errors.MissingObjectException;
+import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevCommit;
@@ -38,8 +41,6 @@ public class SccsServiceForGitImpl extends RDFServices implements SccsService {
 
 	private String commitPrefix = "http://www.interition.net/sccs/";
 	private String filePrefix = "file://www.interition.net/sparqlycode/";
-	private String sccsProjectRootFolder;
-
 	private final DateTimeFormatter formater = new DateTimeFormatterBuilder()
 			.appendYear(4, 4).appendLiteral('-').appendMonthOfYear(2)
 			.appendLiteral('-').appendDayOfMonth(2).appendLiteral('T')
@@ -50,9 +51,24 @@ public class SccsServiceForGitImpl extends RDFServices implements SccsService {
 	// create an empty Jena Model
 	private Model model = ModelFactory.createDefaultModel();
 
-	public SccsServiceForGitImpl(String projectIdentifier, String folder) {
-		this.sccsProjectRootFolder = folder;
+	private Repository repository = null;
+
+	public SccsServiceForGitImpl(String projectIdentifier, String folder)
+			throws Exception {
+
+		// instantiate the git repository
+		FileRepositoryBuilder builder = new FileRepositoryBuilder();
+
+		try {
+			repository = builder.setGitDir(new File(folder + "/.git")).build();
+		} catch (IOException e) {
+			e.printStackTrace();
+			throw new Exception(e);
+		}
+
+		// build RDF prefix's
 		buildPrefix("git", projectIdentifier);
+
 	}
 
 	/*
@@ -64,26 +80,46 @@ public class SccsServiceForGitImpl extends RDFServices implements SccsService {
 	 * net.interition.sparqlycode.sccs.SccsService#publishSCforHead(java.io.
 	 * File)
 	 */
-	public void publishSCforHead(File out, final List<String> sourceFolders, int depth)
-			throws Exception {
+	public void publishSCforHead(File out, final List<String> sourceFolders,
+			int depth) throws Exception {
+
+		RevWalk walk = new RevWalk(repository);
+		ObjectId from = repository.resolve("HEAD");
 		
-		StringBuffer endCommit = new StringBuffer();
-		endCommit.append("HEAD");
-		
-		for(int i = 0; i < depth ; i++) {
-			endCommit.append("^");
+		if(from == null) {
+			throw new Exception("HEAD did not exist");
 		}
 		
-		logger.debug("git log from HEAD to " + endCommit);
+		String sDepth = from.getName() + '~' + String.valueOf(depth);
 		
-		
-		try {
-			publishSCforTag(out, endCommit.toString(), "HEAD", sourceFolders);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			throw new Exception(e);
+		ObjectId to = repository.resolve(sDepth);
+
+		if(to == null) {
+			throw new Exception(sDepth +  " did not exist");
 		}
+		
+		logger.debug("walk from: HEAD (" + from.getName() + ") to " + sDepth);
+
+		walk.markStart(walk.parseCommit(from));
+		walk.markUninteresting(walk.parseCommit(to));
+
+		for (RevCommit commit : walk) {
+			// create an RDF Resource for a Commit
+			Resource commitResource = model.createResource(commitPrefix
+					+ commit.getName(), PROVO.Activity);
+
+			// add a property (nothing appears in the model until a property is
+			// applied)
+			commitResource.addProperty(RDFS.label, commit.getShortMessage());
+
+			// create the relationships between the commit and the files
+			relateCommitsToArtifacts(commit, commitResource, sourceFolders);
+
+		}
+
+		walk.dispose();
+
+		writeRdf(model, out);
 
 	}
 
@@ -107,21 +143,7 @@ public class SccsServiceForGitImpl extends RDFServices implements SccsService {
 			final List<String> sourceFolders) throws Exception {
 
 		// to use the tag ranges there is going to have to be some checks that
-		// they are valid
-		// git log --pretty=oneline refs/tags/jena-2.11.0..refs/tags/jena-2.11.2
-		// startTag = "refs/tags/jena-2.11.2" ;
-		// endTag = "refs/tags/jena-2.11.1" ;
-
-		FileRepositoryBuilder builder = new FileRepositoryBuilder();
-		Repository repository = null;
-		try {
-			repository = builder.setGitDir(
-					new File(this.sccsProjectRootFolder + "/.git")).build();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			throw new Exception(e);
-		}
+		// they are valid!!!
 
 		RevWalk walk = new RevWalk(repository);
 
@@ -142,65 +164,70 @@ public class SccsServiceForGitImpl extends RDFServices implements SccsService {
 			// applied)
 			commitResource.addProperty(RDFS.label, commit.getShortMessage());
 
-			// create an association with each controlled artefact (file)
-			RevTree tree = commit.getTree();
-
-			TreeWalk treeWalk = new TreeWalk(repository);
-			treeWalk.addTree(tree);
-			treeWalk.setRecursive(true);
-
-			while (treeWalk.next()) {
-
-				// remove the source folder prefix's from Java file paths
-				String path = treeWalk.getPathString();
-				if (path.endsWith(".java")) {
-					path = this.removeSourceRootFromPath(sourceFolders, path);
-				}
-
-				// make each file a prov:Entity
-				Resource fileResource = model.createResource(filePrefix + path,
-						PROVO.Entity);
-
-				// relate the prov:Entity to the commit
-				commitResource.addProperty(PROVO.used, fileResource);
-
-				DateTime dt = new DateTime(commit.getAuthorIdent().getWhen());
-
-				String date = dt.toString(formater);
-
-				commitResource.addProperty(PROVO.endedAtTime,
-						model.createTypedLiteral(date, "xsd:dateTime"));
-
-				String authorEmail = commit.getAuthorIdent().getEmailAddress();
-				Resource author = model.createResource("mailto:" + authorEmail,
-						PROVO.Person);
-				commitResource.addProperty(PROVO.wasAssociatedWith, author);
-
-				// Add some foaf properties to the author
-				author.addProperty(FOAF.name, commit.getAuthorIdent().getName());
-				author.addProperty(FOAF.mbox, authorEmail);
-
-				// get the parent commit and associate with prov:wasInformedBy
-				for (RevCommit parent : commit.getParents()) {
-
-					Resource parentResource = model.createResource(commitPrefix
-							+ parent.getName(), PROVO.Activity);
-
-					commitResource.addProperty(PROVO.wasInformedBy,
-							parentResource);
-
-				}
-
-			}
+			// create the relationships between the commit and the files
+			relateCommitsToArtifacts(commit, commitResource, sourceFolders);
 
 		}
 
 		walk.dispose();
 
-		repository.close();
-
 		writeRdf(model, out);
 
+	}
+
+	private void relateCommitsToArtifacts(final RevCommit commit,
+			final Resource commitResource, List<String> sourceFolders)
+			throws MissingObjectException, IncorrectObjectTypeException,
+			CorruptObjectException, IOException {
+
+		TreeWalk walk = new TreeWalk(repository);
+		RevTree tree = commit.getTree();
+		walk.setRecursive(true);
+
+		walk.addTree(tree);
+
+		while (walk.next()) {
+
+			// remove the source folder prefix's from Java file paths
+			String path = walk.getPathString();
+			if (path.endsWith(".java")) {
+				path = removeSourceRootFromPath(sourceFolders, path);
+			}
+
+			// make each file a prov:Entity
+			Resource fileResource = model.createResource(filePrefix + path,
+					PROVO.Entity);
+
+			// relate the prov:Entity to the commit
+			commitResource.addProperty(PROVO.used, fileResource);
+
+			DateTime dt = new DateTime(commit.getAuthorIdent().getWhen());
+
+			String date = dt.toString(formater);
+
+			commitResource.addProperty(PROVO.endedAtTime,
+					model.createTypedLiteral(date, "xsd:dateTime"));
+
+			String authorEmail = commit.getAuthorIdent().getEmailAddress();
+			Resource author = model.createResource("mailto:" + authorEmail,
+					PROVO.Person);
+			commitResource.addProperty(PROVO.wasAssociatedWith, author);
+
+			// Add some foaf properties to the author
+			author.addProperty(FOAF.name, commit.getAuthorIdent().getName());
+			author.addProperty(FOAF.mbox, authorEmail);
+
+			// get the parent commit and associate with prov:wasInformedBy
+			for (RevCommit parent : commit.getParents()) {
+
+				Resource parentResource = model.createResource(commitPrefix
+						+ parent.getName(), PROVO.Activity);
+
+				commitResource.addProperty(PROVO.wasInformedBy, parentResource);
+
+			}
+
+		}
 	}
 
 	/**
@@ -210,7 +237,7 @@ public class SccsServiceForGitImpl extends RDFServices implements SccsService {
 	 * @return
 	 */
 	private void buildPrefix(String sccs, String project) {
-		
+
 		// not using any default prefixes to make sure we can merge easily
 		// model.setNsPrefix("", "http://default/?");
 
@@ -245,14 +272,19 @@ public class SccsServiceForGitImpl extends RDFServices implements SccsService {
 		for (String root : roots) {
 			if (path.startsWith(root)) {
 				logger.debug("with source root: " + path);
-				path = path.replaceFirst(root , "");
-				if(path.startsWith("/")) path =  path.substring(1);
+				path = path.replaceFirst(root, "");
+				if (path.startsWith("/"))
+					path = path.substring(1);
 				logger.debug("without source root: " + path);
 				break;
 			}
 		}
 
 		return path;
+	}
+	
+	public void close() {
+		repository.close();
 	}
 
 }

@@ -84,7 +84,12 @@ public class SccsMojo extends AbstractMojo {
 		String start = startTag.toString();
 		String end = endTag.toString();
 
-		SccsService service = new SccsServiceForGitImpl(id, directory);
+		SccsService service;
+		try {
+			service = new SccsServiceForGitImpl(id, directory);
+		} catch (Exception e) {
+			throw new MojoExecutionException("Srarting the SCCS KB service failed",e);
+		}
 
 		File file = new File(filename);
 		try {
