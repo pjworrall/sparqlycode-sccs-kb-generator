@@ -117,6 +117,7 @@ public class SccsMojo extends AbstractMojo {
 	 * The SCCS will have file paths relative to the base of the project.
 	 * Java will resolve packages and source code files relative to source code folders.
 	 * The SCCS API needs to know the source code roots relative to the project base.
+	 * Source code roots include project and test folder roots
 	 * This works them out and returns them in a list (as there can be more than one source code root)
 	 * 
 	 * @return List<String>
@@ -126,13 +127,25 @@ public class SccsMojo extends AbstractMojo {
 		@SuppressWarnings("rawtypes")
 		
 		// create a mask using the absolute folder with a trailing /
+		
+		// Build for project source code roots
+		
 		String mask = project.getBasedir().toString() + "/";
 		List<String> roots = new ArrayList<String>();
 		for(Object sourceAbsoluteRoot : project.getCompileSourceRoots() ) {			
 			String relativeSourceRoot = sourceAbsoluteRoot.toString().replace(mask,"");
-			getLog().debug("source root: " + sourceAbsoluteRoot.toString() + " , relative root: " + relativeSourceRoot);
+			getLog().debug("project source root: " + sourceAbsoluteRoot.toString() + " , relative root: " + relativeSourceRoot);
 			roots.add(relativeSourceRoot);
 		}
+		
+		// .. add test source code roots
+		
+		for(Object sourceAbsoluteRoot : project.getTestCompileSourceRoots()) {			
+			String relativeSourceRoot = sourceAbsoluteRoot.toString().replace(mask,"");
+			getLog().debug("test source root: " + sourceAbsoluteRoot.toString() + " , relative root: " + relativeSourceRoot);
+			roots.add(relativeSourceRoot);
+		}
+			
 		return roots;
 	}
 }

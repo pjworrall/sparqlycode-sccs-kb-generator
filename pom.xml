@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.interition</groupId>
 	<artifactId>screpo-maven-plugin</artifactId>
-	<version>0.0.3-SNAPSHOT</version>
+	<version>0.0.4-SNAPSHOT</version>
 	<name>Sparqlycode Source Code Repo Publisher</name>
 	<description>Produces a W3C PROV compliant RDF representation of a Git repository</description>
 	<!-- <packaging>jar</packaging>  -->
@@ -24,7 +24,13 @@
 	</properties>
 
 	<dependencies>
-			<dependency>
+    	<dependency>
+    		<groupId>org.apache.maven.plugin-testing</groupId>
+    		<artifactId>maven-plugin-testing-harness</artifactId>
+    		<version>3.3.0</version>
+      		<scope>test</scope>
+    	</dependency>
+		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>${junit.version}</version>
