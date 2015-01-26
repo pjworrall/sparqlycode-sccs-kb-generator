@@ -9,7 +9,7 @@ import java.util.List;
  */
 public interface SccsService {
 	
-	public void publishSCforHead(File out, final List<String> sourceFolders) throws Exception;
+	public void publishSCforHead(File out, final List<String> sourceFolders, int depth) throws Exception;
 	
 	public void publishSCforBranch(File out, String branchName, final List<String> sourceFolders) throws Exception;
 	

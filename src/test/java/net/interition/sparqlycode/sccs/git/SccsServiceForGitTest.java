@@ -3,28 +3,54 @@ package net.interition.sparqlycode.sccs.git;
 import static org.junit.Assert.*;
 
 import java.io.File;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.List;
 
 import net.interition.sparqlycode.sccs.SccsService;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 public class SccsServiceForGitTest {
 
+	String baseDir;
+	
+	@Before
+	public void setUp() throws Exception {
+		
+		this.baseDir = System.getProperty("baseDir");
+		
+	}
+
+	@After
+	public void tearDown() throws Exception {
+	}
+
 	/**
-	 * The technique used to test the publish should be to: Add the Sparqlycode
-	 * generator to this projects build Use the Sparqlycode testsuite framework
-	 * Use the git repo of the Sparqlycode testsuite for the SPARQL tests
 	 * 
 	 * @throws Exception
 	 */
 	@Test
 	public void testPublishSCforHead() throws Exception {
 
-		// here we would need a test to check the existence of the rdf file and
-		// the integrity of its contents
+		File file = new File(baseDir + "/testPublishSCforHead.ttl");
+
+		if (!file.exists()) {
+			file.createNewFile();
+		} else {
+			file.delete();
+			file.createNewFile();
+		}
+
+		SccsService service = new SccsServiceForGitImpl("sccs.git",
+				baseDir);
+
+		List<String> sourceFolders = new ArrayList<String>();
+
+		sourceFolders.add(baseDir + "/src/main/java");
+
+		service.publishSCforHead(file, sourceFolders, 5);
 
 		fail("Not yet implemented");
 	}
@@ -37,28 +63,12 @@ public class SccsServiceForGitTest {
 	@Test
 	public void testPublishSCforTag() throws Exception {
 
-		SccsService service = new SccsServiceForGitImpl(
-				"net.interition.sparqlycode.testsuite",
-				"/Users/pjworrall/Documents/Java2RDF/sparqlycode/sparqlycode-test-suite");
-		
-		String startTag = "refs/tags/0.0.1d";
+		SccsService service = new SccsServiceForGitImpl("sccs.git", baseDir);
+
+		String startTag = "refs/tags/0.0.2";
 		String endTag = "refs/tags/0.0.1";
-		
 
-		/*
-		 * SccsService service = new SccsServiceForGitImpl("org.apache.jena",
-		 * "/Users/pjworrall/Documents/sparqlycode/sources/jena");
-		 */
-
-/*		String startTag = "refs/tags/jena-2.11.2";
-		String endTag = "refs/tags/jena-2.11.1";*/
-
-		String gitTtlLoc = System.getProperty("sccs-ttl-loc");
-		String gitTtlName = System.getProperty("sccs-ttl-name");
-
-		String fullFileName = gitTtlLoc + File.separator + gitTtlName;
-
-		File file = new File(fullFileName);
+		File file = new File(baseDir + "/testPublishSCforTag.ttl");
 
 		if (!file.exists()) {
 			file.createNewFile();
@@ -69,7 +79,13 @@ public class SccsServiceForGitTest {
 
 		service.publishSCforTag(file, startTag, endTag, new ArrayList<String>());
 
+		// run any sparql tests
+
+		// delete file
+
+		// assert
 		fail("Not yet implemented");
+
 	}
 
 }

@@ -56,8 +56,7 @@ public class SccsServiceForGitImpl extends RDFServices implements SccsService {
 	}
 
 	/*
-	 * Produces SC SCCS KB from the current Git HEAD to the last HEAD ??? ph*#
-	 * or something dunno
+	 * Produces SC SCCS KB from the current Git HEAD back X commits
 	 * 
 	 * (non-Javadoc)
 	 * 
@@ -65,10 +64,21 @@ public class SccsServiceForGitImpl extends RDFServices implements SccsService {
 	 * net.interition.sparqlycode.sccs.SccsService#publishSCforHead(java.io.
 	 * File)
 	 */
-	public void publishSCforHead(File out, final List<String> sourceFolders)
+	public void publishSCforHead(File out, final List<String> sourceFolders, int depth)
 			throws Exception {
+		
+		StringBuffer endCommit = new StringBuffer();
+		endCommit.append("HEAD");
+		
+		for(int i = 0; i < depth ; i++) {
+			endCommit.append("^");
+		}
+		
+		logger.debug("git log from HEAD to " + endCommit);
+		
+		
 		try {
-			publishSCforTag(out, "HEAD^", "HEAD", sourceFolders);
+			publishSCforTag(out, endCommit.toString(), "HEAD", sourceFolders);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
