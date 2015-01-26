@@ -1,0 +1,126 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>0.0.0</modelVersion>
+	<groupId>net.interition</groupId>
+	<artifactId>test-pom</artifactId>
+	<version>0.0.0-SNAPSHOT</version>
+	<name>Test POM</name>
+	<description>Test POM for exercising plugin features</description>
+	<packaging>jar</packaging>
+	<properties>
+		<sparqlycode.lib>${env.SPARQLYCODE_HOME}/lib</sparqlycode.lib>
+		<subpackage>net.interition.sparqlycode</subpackage>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.11</version>
+			<!-- we have unit test cases in the main code that we are testing so need 
+				this dependency in compile scope -->
+			<!-- <scope>test</scope> -->
+		</dependency>
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.4</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.jena</groupId>
+			<artifactId>apache-jena-libs</artifactId>
+			<type>pom</type>
+			<version>2.11.2</version>
+			<!-- <scope>test</scope> -->
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.3.2</version>
+		</dependency>
+	</dependencies>
+	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-javadoc-plugin</artifactId>
+					<version>2.9.1</version>
+					<configuration>
+						<doclet>net.interition.sparqlycode.doclet.RdfDoclet</doclet>
+						<docletPath>${sparqlycode.lib}/sparqlycode-maven-plugin.jar:${sparqlycode.lib}/jena-core-2.11.1.jar:${sparqlycode.lib}/jena-arq-2.11.1.jar:${sparqlycode.lib}/jena-iri-1.0.1.jar:${sparqlycode.lib}/slf4j-log4j12-1.6.4.jar:${sparqlycode.lib}/jcl-over-slf4j-1.6.4.jar:${sparqlycode.lib}/slf4j-api-1.6.4.jar:${sparqlycode.lib}/log4j-1.2.16.jar:${sparqlycode.lib}/xml-apis-1.4.01.jar:${sparqlycode.lib}/xercesImpl-2.11.0.jar:${sparqlycode.lib}/commons-lang3-3.2.1.jar</docletPath>
+						<javadocVersion>1.7</javadocVersion>
+						<useStandardDocletOptions>false</useStandardDocletOptions>
+						<detail>true</detail>
+						<failOnError>true</failOnError>
+						<debug>true</debug>
+						<show>private</show>
+						<additionalparam>-file sparqlycode.ttl</additionalparam>
+						<additionalparam>-baseuri
+							http://www.interition.net/sparqlycode/id/</additionalparam>
+						<subpackages>${subpackage}</subpackages>
+						<reportOutputDirectory>${basedir}</reportOutputDirectory>
+						<destDir>/src/test/resources</destDir>
+					</configuration>
+					<!-- thought I better mention that the execution declaration is NOT 
+						working. Here to remind me to fix it. -->
+					<executions>
+						<execution>
+							<id>in-build</id>
+							<phase>test</phase>
+							<goals>
+								<goal>javadoc</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-surefire-plugin</artifactId>
+					<version>2.17</version>
+					<configuration>
+						<additionalClasspathElements>
+							<additionalClasspathElement>${basedir}/target/site/apidocs</additionalClasspathElement>
+						</additionalClasspathElements>
+					</configuration>
+				</plugin>
+
+
+				<!-- This plugin is to run a Riot check before doing anything else -->
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>exec-maven-plugin</artifactId>
+					<version>1.3.2</version>
+					<configuration>
+						<includePluginDependencies>true</includePluginDependencies>
+						<mainClass>net.interition.sparqlycode.testsuite.ValidityChecker</mainClass>
+					</configuration>
+					<dependencies>
+						<dependency>
+							<groupId>org.apache.jena</groupId>
+							<artifactId>apache-jena-libs</artifactId>
+							<type>pom</type>
+							<version>2.12.0</version>
+						</dependency>
+					</dependencies>
+				</plugin>
+				
+				<!-- This plugin is for the SC SCCS KB publisher -->
+				<plugin>
+					<groupId>net.interition</groupId>
+					<artifactId>screpo-maven-plugin</artifactId>
+					<version>0.0.3-SNAPSHOT</version>
+					<configuration>
+    					<message>Testsuite SCCS KB Generation</message>
+    					<outputfile>${project.build.testOutputDirectory}/sccs.ttl</outputfile>
+    					<startTag>refs/tags/0.0.2</startTag>
+    					<endTag>refs/tags/0.0.1c</endTag>
+    					<identifier>id</identifier>
+  					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
+</project>
