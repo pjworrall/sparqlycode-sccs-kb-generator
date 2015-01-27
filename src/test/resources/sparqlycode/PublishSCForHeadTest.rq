@@ -1,11 +1,20 @@
-# count the number of commits
+# git log --pretty=oneline HEAD^^^^^..HEAD
 
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX prov: <http://www.w3.org/ns/prov#>
 PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+PREFIX sccs:  <http://www.interition.net/sccs/git/id/sccs.git/>
 
-SELECT * WHERE {
+ASK {
 	
-	 ?commit a prov:Activity .
+	sccs:c998ec73e5cafc5bd4b36e198570d8ec3e60d35d a prov:Activity .
+	sccs:7e9834714e8641785bf6aa94b60c3ab69355e270 a prov:Activity .
+	sccs:33db312f8b796ffaf20b97e1bde328a02f0621e2 a prov:Activity .
+	sccs:c77770b9df2e9f503ece3f7c1debb1a01ccc19aa a prov:Activity .
 	
 }
+
+#SELECT * WHERE {
+#   ?_commit a prov:Activity ; rdfs:label ?Commit ; prov:endedAtTime ?_time .
+#} order by desc(?_time)
+

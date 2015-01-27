@@ -25,11 +25,6 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>net.interition</groupId>
-			<artifactId>testsuite</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
-		<dependency>
 			<groupId>org.apache.maven.plugin-testing</groupId>
 			<artifactId>maven-plugin-testing-harness</artifactId>
 			<version>3.3.0</version>
@@ -198,9 +193,7 @@
 							<!-- there is a problem with this command line arg decleration, if 
 								you reformat the XML it gets mucked up, watch out! -->
 							<commandlineArgs>
-								-i ${basedir}/src/main/resources/PROVO.ttl --owl
-								--inference -e TTL --package net.interition.sparlycode.model -o
-								${basedir}/generated-sources/java -n PROVO
+								-i ${basedir}/src/main/resources/PROVO.ttl --owl --inference -e TTL --package net.interition.sparlycode.model -o ${basedir}/generated-sources/java -n PROVO
 							</commandlineArgs>
 						</configuration>
 					</execution>
@@ -232,10 +225,25 @@
 						Eclipse needs the properties setup elsewhere -->
 					<systemPropertyVariables>
 						<sccs-ttl-loc>${basedir}/target</sccs-ttl-loc>
-						<sccs-ttl-name>git.ttl</sccs-ttl-name>
+						<sccs-ttl-name>/git.ttl</sccs-ttl-name>
 					</systemPropertyVariables>
 				</configuration>
 			</plugin>
+			
+			<!-- This plugin is for the SC SCCS KB publisher TO RUN ON ITSELF HERE -->
+			<plugin>
+				<groupId>net.interition</groupId>
+				<artifactId>screpo-maven-plugin</artifactId>
+				<version>0.0.4-SNAPSHOT</version>
+				<configuration>
+   					<message>Testsuite SCCS KB Generation</message>
+   					<outputfile>${project.build.testOutputDirectory}/git.ttl</outputfile>
+   					<startTag>refs/tags/0.0.2</startTag>
+   					<endTag>refs/tags/0.0.1</endTag>
+   					<identifier>id</identifier>
+ 					</configuration>
+			</plugin>		
+			
 		</plugins>
 		<pluginManagement>
 			<plugins>

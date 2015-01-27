@@ -4,7 +4,6 @@
 package net.interition.sparqlycode.sccs.sparql;
 
 import static org.junit.Assert.*;
-import net.interition.sparqlycode.testsuite.SparqlycodeBaseTest;
 
 import org.junit.Before;
 import org.junit.Test;

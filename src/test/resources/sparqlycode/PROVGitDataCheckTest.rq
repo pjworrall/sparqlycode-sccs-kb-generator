@@ -11,8 +11,8 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX prov: <http://www.w3.org/ns/prov#>
 PREFIX foaf: <http://xmlns.com/foaf/0.1/>
 
-SELECT ?Message ?Email ?Time WHERE {
-#ASK WHERE {
+#SELECT ?Message ?Email ?Time WHERE {
+ASK WHERE {
 	<http://www.interition.net/sccs/git/net.interition.sparqlycode.testsuite/5b076fe1b151119c844fa0c5c4365c5da2c7efd9> 
 	     rdfs:label ?Message ; prov:wasAssociatedWith ?_author ; prov:endedAtTime ?Time .
 	?_author foaf:mbox ?Email .

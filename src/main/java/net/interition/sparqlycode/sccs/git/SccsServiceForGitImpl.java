@@ -148,7 +148,15 @@ public class SccsServiceForGitImpl extends RDFServices implements SccsService {
 		RevWalk walk = new RevWalk(repository);
 
 		Ref from = repository.getRef(startTag);
+		if(from == null) {
+			throw new Exception(startTag + " did not exist");
+		}
+		
 		Ref to = repository.getRef(endTag);
+		
+		if(to == null) {
+			throw new Exception(endTag + " did not exist");
+		}
 
 		logger.debug("walk from: " + startTag + " , to " + endTag);
 

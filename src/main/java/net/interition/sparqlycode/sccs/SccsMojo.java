@@ -129,8 +129,6 @@ public class SccsMojo extends AbstractMojo {
 	 */
 	
 	private List<String> getSourceFolderRoots() {
-		@SuppressWarnings("rawtypes")
-		
 		// create a mask using the absolute folder with a trailing /
 		
 		// Build for project source code roots

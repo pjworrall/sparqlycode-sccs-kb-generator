@@ -1,11 +1,19 @@
-# count the number of commits
+# git log --pretty=oneline refs/tags/0.0.1..refs/tags/0.0.2
 
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX prov: <http://www.w3.org/ns/prov#>
 PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+PREFIX sccs:  <http://www.interition.net/sccs/git/id/sccs.git/>
 
-SELECT * WHERE {
-	
-	 ?commit a prov:Activity .
-	
+ASK {	
+	sccs:156d6bd74b2dee4cebf8e3efbfd0f1afc40d3ebf a prov:Activity .
+	sccs:7027adad9b61fe1138f784ec4dfa59eff09c95be a prov:Activity .
+	sccs:c6b8f95b123a83fd9a0536b215b219639f4b01f5 a prov:Activity .
+	sccs:538406411d3346039dbb52bf9512a4311afaf5a1 a prov:Activity .
+	sccs:0aced27a7a1deb854d41d651b878a8d9ab3c9e0f a prov:Activity .
+	sccs:bb5709583300f7ff5d697cb75820f57da684e55e a prov:Activity .
+	sccs:99d311d0f74e232bbe8522698f9214c07f985fe3 a prov:Activity .
+	sccs:ed5950d870f10d5d862761dadeb2f9b5c9c0ddbb a prov:Activity .
 }
+
+
