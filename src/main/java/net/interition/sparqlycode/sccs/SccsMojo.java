@@ -1,6 +1,7 @@
 package net.interition.sparqlycode.sccs;
 
 import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,6 +11,7 @@ import net.interition.sparqlycode.sccs.git.SccsServiceForGitImpl;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
+import org.apache.maven.project.MavenProject;
 
 /**
  * Runs SCCS KB Publisher for containing project
@@ -68,18 +70,20 @@ public class SccsMojo extends AbstractMojo {
 
 	public void execute() throws MojoExecutionException, MojoFailureException {
 
+		String gitDir = this.getGitDir(project.getBasedir()).toString();
+
 		getLog().debug(
 				"Parameters - outputfile= " + outputfile
 						+ " , uri identifier= " + identifier + " , message= "
 						+ message + " , startTag= " + startTag + " , endTag= "
-						+ endTag + ", sccs dir= " + project.getBasedir());
+						+ endTag + ", sccs dir= " + gitDir);
 
 		getLog().info(message.toString());
 
 		// this is the identifier to appear in the minted Uri
 		String id = identifier.toString();
 		// the root of the project where .git will exist
-		String directory = project.getBasedir().toString();
+		String directory = gitDir;
 		String filename = outputfile.toString();
 		String start = startTag.toString();
 		String end = endTag.toString();
@@ -88,7 +92,8 @@ public class SccsMojo extends AbstractMojo {
 		try {
 			service = new SccsServiceForGitImpl(id, directory);
 		} catch (Exception e) {
-			throw new MojoExecutionException("Srarting the SCCS KB service failed",e);
+			throw new MojoExecutionException(
+					"Srarting the SCCS KB service failed", e);
 		}
 
 		File file = new File(filename);
@@ -101,10 +106,10 @@ public class SccsMojo extends AbstractMojo {
 			getLog().error("Error opening file for output.", e);
 			return;
 		}
-		
+
 		// we need the source code roots relative to the project base directory
 		List<String> roots = this.getSourceFolderRoots();
-		
+
 		try {
 			getLog().info(
 					"calling  service.publishSCforTag() with " + file + " , "
@@ -116,39 +121,91 @@ public class SccsMojo extends AbstractMojo {
 		}
 
 	}
-	
+
 	/**
 	 * 
-	 * The SCCS will have file paths relative to the base of the project.
-	 * Java will resolve packages and source code files relative to source code folders.
-	 * The SCCS API needs to know the source code roots relative to the project base.
-	 * Source code roots include project and test folder roots
-	 * This works them out and returns them in a list (as there can be more than one source code root)
+	 * The SCCS will have file paths relative to the base of the project. Java
+	 * will resolve packages and source code files relative to source code
+	 * folders. The SCCS API needs to know the source code roots relative to the
+	 * project base. Source code roots include project and test folder roots
+	 * This works them out and returns them in a list (as there can be more than
+	 * one source code root)
 	 * 
 	 * @return List<String>
 	 */
-	
+
 	private List<String> getSourceFolderRoots() {
 		// create a mask using the absolute folder with a trailing /
-		
+
 		// Build for project source code roots
-		
+
 		String mask = project.getBasedir().toString() + "/";
 		List<String> roots = new ArrayList<String>();
-		for(Object sourceAbsoluteRoot : project.getCompileSourceRoots() ) {			
-			String relativeSourceRoot = sourceAbsoluteRoot.toString().replace(mask,"");
-			getLog().debug("project source root: " + sourceAbsoluteRoot.toString() + " , relative root: " + relativeSourceRoot);
+		for (Object sourceAbsoluteRoot : project.getCompileSourceRoots()) {
+			String relativeSourceRoot = sourceAbsoluteRoot.toString().replace(
+					mask, "");
+			getLog().debug(
+					"project source root: " + sourceAbsoluteRoot.toString()
+							+ " , relative root: " + relativeSourceRoot);
 			roots.add(relativeSourceRoot);
 		}
-		
+
 		// .. add test source code roots
-		
-		for(Object sourceAbsoluteRoot : project.getTestCompileSourceRoots()) {			
-			String relativeSourceRoot = sourceAbsoluteRoot.toString().replace(mask,"");
-			getLog().debug("test source root: " + sourceAbsoluteRoot.toString() + " , relative root: " + relativeSourceRoot);
+
+		for (Object sourceAbsoluteRoot : project.getTestCompileSourceRoots()) {
+			String relativeSourceRoot = sourceAbsoluteRoot.toString().replace(
+					mask, "");
+			getLog().debug(
+					"test source root: " + sourceAbsoluteRoot.toString()
+							+ " , relative root: " + relativeSourceRoot);
 			roots.add(relativeSourceRoot);
 		}
-			
+
 		return roots;
+	}
+
+	/**
+	 * 
+	 * Determines the .git location using the projects base dir and then
+	 * navigating up the folder hierarchy until a .git folder is found.
+	 * 
+	 * @param project
+	 * @return
+	 */
+	public File getGitDir(File baseDir) {
+
+		if (baseDir == null) {
+			throw new RuntimeException(
+					"Could not determine projects directory location");
+		}
+
+		while(!containsGitFolder(baseDir)) {
+			if( (baseDir = baseDir.getParentFile()) == null ) {
+				throw new RuntimeException(
+						"No .git folder found in folder hierarchy");
+			}
+		}
+
+		return baseDir;
+
+	}
+
+	private boolean containsGitFolder(final File directory) {
+		
+		boolean gitFolder = false;
+
+		if (!directory.isDirectory()) {
+			throw new RuntimeException(
+					"Maven baseDir unexpectedly not a directory");
+		} else {
+			for (File file : directory.listFiles()) {
+				if (".git".equals(file.getName())) {
+					gitFolder = true;
+					break;
+				}
+			}
+		}
+
+		return gitFolder;
 	}
 }
