@@ -4,7 +4,9 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import net.interition.sparqlycode.sccs.git.SccsServiceForGitImpl;
 
@@ -20,13 +22,22 @@ import org.apache.maven.project.MavenProject;
  * work with Maven 2 apparently so using the old Javadoc method.
  * 
  * @goal screpo
+ * @aggregator true
+ * @requiresDirectInvocation true
+ * 
  */
 public class SccsMojo extends AbstractMojo {
 
 	/**
 	 * Configuration parameters and default values
 	 */
-
+	
+	/**
+	 * @parameter expression="${reactorProjects}"
+	 * @readonly
+	 */
+	private List<MavenProject> reactorProjects;
+	
 	/**
 	 * 
 	 * An informational message
@@ -93,7 +104,7 @@ public class SccsMojo extends AbstractMojo {
 			service = new SccsServiceForGitImpl(id, directory);
 		} catch (Exception e) {
 			throw new MojoExecutionException(
-					"Srarting the SCCS KB service failed", e);
+					"Starting the SCCS KB service failed", e);
 		}
 
 		File file = new File(filename);
@@ -107,19 +118,56 @@ public class SccsMojo extends AbstractMojo {
 			return;
 		}
 
-		// we need the source code roots relative to the project base directory
-		List<String> roots = this.getSourceFolderRoots();
+		// we need the source code roots relative to the git base directory
+		List<String> roots = this.getSourceFolderRoots(gitDir);
+		
+		getLog().debug(roots.toString());
 
 		try {
 			getLog().info(
 					"calling  service.publishSCforTag() with " + file + " , "
 							+ start + " , " + end);
+
 			service.publishSCforTag(file, start, end, roots);
 		} catch (Exception e) {
 			getLog().error("Error encountered publishing SC", e);
 			return;
 		}
 
+	}
+
+	/**
+	 * For both single and multi module projects determine the source folder
+	 * routes This is needed for the SCCS API.
+	 * 
+	 * 
+	 * @return List<String>
+	 */
+
+	private List<String> getSourceFolderRoots(String gitDir) {
+
+		// if the project is multi module then iterate through and concatenate the list
+		// else just process this project
+		
+		List<String> sourceFolders = new ArrayList<String>();
+
+		if( "POM".equalsIgnoreCase(project.getPackaging()) )  {
+			getLog().debug("Multi module project, packaging: " 
+						+ project.getPackaging() +
+						"No modules in reactor: " + reactorProjects.size());
+
+			for( MavenProject module : reactorProjects) {
+					getLog().info("module: " + module.getName() + " baseDir: "+ module.getBasedir().toString());
+					sourceFolders.addAll(getSourceFolderRootsForProject(gitDir,module));
+			}
+		} else {
+			getLog().debug("Not a multi module project, packaging: " + project.getPackaging());
+			sourceFolders = getSourceFolderRootsForProject(gitDir,project);
+		}
+		
+		
+		return sourceFolders;
+		
 	}
 
 	/**
@@ -134,25 +182,28 @@ public class SccsMojo extends AbstractMojo {
 	 * @return List<String>
 	 */
 
-	private List<String> getSourceFolderRoots() {
+	private List<String> getSourceFolderRootsForProject(String gitDir, MavenProject module) {
+		
 		// create a mask using the absolute folder with a trailing /
-
+		String mask = gitDir + "/";
+		
+		getLog().debug("getting source file roots... mask: " + mask);
+		
 		// Build for project source code roots
-
-		String mask = project.getBasedir().toString() + "/";
+		
 		List<String> roots = new ArrayList<String>();
-		for (Object sourceAbsoluteRoot : project.getCompileSourceRoots()) {
+		for (Object sourceAbsoluteRoot : module.getCompileSourceRoots()) {
 			String relativeSourceRoot = sourceAbsoluteRoot.toString().replace(
 					mask, "");
 			getLog().debug(
-					"project source root: " + sourceAbsoluteRoot.toString()
+					"module source root: " + sourceAbsoluteRoot.toString()
 							+ " , relative root: " + relativeSourceRoot);
 			roots.add(relativeSourceRoot);
 		}
 
 		// .. add test source code roots
 
-		for (Object sourceAbsoluteRoot : project.getTestCompileSourceRoots()) {
+		for (Object sourceAbsoluteRoot : module.getTestCompileSourceRoots()) {
 			String relativeSourceRoot = sourceAbsoluteRoot.toString().replace(
 					mask, "");
 			getLog().debug(
@@ -162,6 +213,7 @@ public class SccsMojo extends AbstractMojo {
 		}
 
 		return roots;
+
 	}
 
 	/**
@@ -179,8 +231,8 @@ public class SccsMojo extends AbstractMojo {
 					"Could not determine projects directory location");
 		}
 
-		while(!containsGitFolder(baseDir)) {
-			if( (baseDir = baseDir.getParentFile()) == null ) {
+		while (!containsGitFolder(baseDir)) {
+			if ((baseDir = baseDir.getParentFile()) == null) {
 				throw new RuntimeException(
 						"No .git folder found in folder hierarchy");
 			}
@@ -191,7 +243,7 @@ public class SccsMojo extends AbstractMojo {
 	}
 
 	private boolean containsGitFolder(final File directory) {
-		
+
 		boolean gitFolder = false;
 
 		if (!directory.isDirectory()) {
@@ -208,4 +260,5 @@ public class SccsMojo extends AbstractMojo {
 
 		return gitFolder;
 	}
+
 }
