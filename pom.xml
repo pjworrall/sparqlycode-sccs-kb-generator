@@ -105,9 +105,11 @@
 				<artifactId>maven-jar-plugin</artifactId>
 				<configuration>
 					<!-- DO NOT include log4j.xml file in your Jar -->
+					<!-- 
 					<excludes>
 						<exclude>**/log4j.xml</exclude>
 					</excludes>
+					-->
 					<archive>
 						<manifest>
 							<addClasspath>true</addClasspath>

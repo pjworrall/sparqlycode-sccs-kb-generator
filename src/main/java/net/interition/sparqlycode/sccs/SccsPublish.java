@@ -3,7 +3,12 @@ package net.interition.sparqlycode.sccs;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import edu.emory.mathcs.backport.java.util.Arrays;
 import net.interition.sparqlycode.sccs.git.SccsServiceForGitImpl;
 
 /*
@@ -21,6 +26,8 @@ import net.interition.sparqlycode.sccs.git.SccsServiceForGitImpl;
  */
 
 public class SccsPublish {
+	
+	private static final Log log = LogFactory.getLog(SccsPublish.class);
 
 	public static void main(String[] args) {
 
@@ -32,22 +39,24 @@ public class SccsPublish {
 		String identifier = "IDENTIFIER-NOT-PROVIDED";
 		String directory = ".";
 		String filename = "";
+		String sourceroots = "";
 
-		if (args.length == 6) {
+		if (args.length == 7) {
 			sccs = args[0];
 			endTag = args[1];
 			startTag = args[2];
 			identifier = args[3];
 			directory = args[4];
 			filename = args[5] + ".ttl";
+			sourceroots = args[6];
 		} else {
 			System.out
-					.println("usage: SccsPublish sccs-type range-start range-end uri-prefix sccs-dir outputfile");
+					.println("usage: java -jar x.jar sccs-type range-start range-end uri-id sccs-dir outputfile \"sourceroot1:2:3..\"");
 			System.exit(1);
 		}
 
 		if (sccs.equalsIgnoreCase("GIT")) {
-			publisher.gitPublisher(startTag, endTag, identifier, directory, filename);
+			publisher.gitPublisher(startTag, endTag, identifier, directory, filename, getSourceRoots(sourceroots));
 		} else {
 			System.out.println("sccs type: only support GIT currently");
 			System.exit(1);
@@ -56,7 +65,7 @@ public class SccsPublish {
 	}
 
 	private void gitPublisher(String startTag, String endTag, String identifier, String directory,
-			String filename) {
+			String filename, List<String> sourceRoots) {
 
 		SccsService service;
 		try {
@@ -78,11 +87,26 @@ public class SccsPublish {
 		}
 
 		try {
-			service.publishSCforTag(file, startTag, endTag, new ArrayList<String>());
+			service.publishSCforTag(file, startTag, endTag, sourceRoots);
 		} catch (Exception e) {
 			throw new RuntimeException("Error encountered publishing SC",e);
 		}
 
+	}
+	
+	private static List<String> getSourceRoots(String sourceRoots) {
+		
+		log.debug("Processing sourceroots: " + sourceRoots);
+		
+		String[] roots = sourceRoots.split(":");
+		
+		@SuppressWarnings("unchecked")
+		List<String> rootsList = new ArrayList<String>(Arrays.asList(roots));
+		
+		log.debug("source roots list content:" + rootsList) ;
+		
+		return rootsList;
+		
 	}
 
 }

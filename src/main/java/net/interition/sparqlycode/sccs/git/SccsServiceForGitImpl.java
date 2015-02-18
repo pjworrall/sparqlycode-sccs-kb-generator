@@ -201,6 +201,12 @@ public class SccsServiceForGitImpl extends RDFServices implements SccsService {
 			if (path.endsWith(".java")) {
 				path = removeSourceRootFromPath(sourceFolders, path);
 			}
+			
+			// remove any spaces as this is not allowed in URI
+			// TODO: WE REALLY NEED A MORE STRATEGIC SOLUTION TO MALFORMED URI/URL CREATION
+			//       Tried URLEncode but it introduced other issues that need decisions made for
+			
+			path = path.replaceAll("\\s","");
 
 			// make each file a prov:Entity
 			Resource fileResource = model.createResource(filePrefix + path,
