@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.interition</groupId>
 	<artifactId>screpo-maven-plugin</artifactId>
-	<version>0.0.5</version>
+	<version>0.0.6</version>
 	<name>Sparqlycode Source Code Repo Publisher</name>
 	<description>Produces a W3C PROV compliant RDF representation of a Git repository</description>
 	<!-- <packaging>jar</packaging> -->
