@@ -1,0 +1,67 @@
+@prefix : <http://www.interition.net/sccs/git/ref/> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+
+<http://www.w3.org/ns/prov#>
+    a owl:Ontology ;
+    rdfs:comment """This Ontology is published by the Paul Worrall of Interition Limited (http://www.interition.net). March 2015 .
+
+This is an Ontology representing concepts in the Git source code control system.
+
+If you wish to make comments regarding this Ontology, please send them to info@interition.net. All feedback is welcome."""@en ;
+    rdfs:isDefinedBy <http://www.interition.net/sccs/git/ref> ;
+    rdfs:label "Sparqlycode SCCS KB Domain Specific Ontology for Git"@en .
+
+
+:Commit
+	 a rdfs:Class ;
+	 rdfs:label "a Commit" .
+	 
+:Author
+	 a foaf:Person ;
+	 rdfs:label "a Commit" .
+	 
+:File
+	a rdfs:Class ;
+	 rdfs:label "a File" .
+
+:Tag
+	a rdfs:Class ;
+	 rdfs:label "a Tag. eg of a Release" .
+	
+:Branch
+	a rdfs:Class ;
+	 rdfs:label "a branch" .
+	 
+:Remote
+	a rdfs:Class ;
+	 rdfs:label "a remote" .
+ 
+:parent
+    a rdf:Property ;
+    rdfs:label "relationship to the previous commit(s)" .
+    
+:file
+	a rdf:Property ;
+    rdfs:label "relationship to a file changed in a commit" .
+    
+:author
+	a rdf:Property ;
+    rdfs:label "relationship to the author of a commit" .   
+    
+:isAdded
+	a rdf:Property ;
+    rdfs:label "boolean indicating if the artefact was added" .  
+    
+:isDeleted
+	a rdf:Property ;
+    rdfs:label "boolean indicating if the artefact was deleted" .  
+    
+:isModified
+	a rdf:Property ;
+    rdfs:label "boolean indicating if the artefact was modified" .
+

@@ -6,17 +6,22 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.eclipse.jgit.diff.DiffEntry;
+import org.eclipse.jgit.diff.DiffFormatter;
 import org.eclipse.jgit.errors.CorruptObjectException;
 import org.eclipse.jgit.errors.IncorrectObjectTypeException;
 import org.eclipse.jgit.errors.MissingObjectException;
 import org.eclipse.jgit.lib.ObjectId;
+import org.eclipse.jgit.lib.ObjectReader;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevTree;
 import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
+import org.eclipse.jgit.treewalk.CanonicalTreeParser;
 import org.eclipse.jgit.treewalk.TreeWalk;
+import org.eclipse.jgit.util.io.DisabledOutputStream;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.DateTimeFormatterBuilder;
@@ -85,19 +90,19 @@ public class SccsServiceForGitImpl extends RDFServices implements SccsService {
 
 		RevWalk walk = new RevWalk(repository);
 		ObjectId from = repository.resolve("HEAD");
-		
-		if(from == null) {
+
+		if (from == null) {
 			throw new Exception("HEAD did not exist");
 		}
-		
+
 		String sDepth = from.getName() + '~' + String.valueOf(depth);
-		
+
 		ObjectId to = repository.resolve(sDepth);
 
-		if(to == null) {
-			throw new Exception(sDepth +  " did not exist");
+		if (to == null) {
+			throw new Exception(sDepth + " did not exist");
 		}
-		
+
 		logger.debug("walk from: HEAD (" + from.getName() + ") to " + sDepth);
 
 		walk.markStart(walk.parseCommit(from));
@@ -116,6 +121,7 @@ public class SccsServiceForGitImpl extends RDFServices implements SccsService {
 			relateCommitsToArtifacts(commit, commitResource, sourceFolders);
 
 		}
+
 
 		walk.dispose();
 
@@ -148,13 +154,13 @@ public class SccsServiceForGitImpl extends RDFServices implements SccsService {
 		RevWalk walk = new RevWalk(repository);
 
 		Ref from = repository.getRef(startTag);
-		if(from == null) {
+		if (from == null) {
 			throw new Exception(startTag + " did not exist");
 		}
-		
+
 		Ref to = repository.getRef(endTag);
-		
-		if(to == null) {
+
+		if (to == null) {
 			throw new Exception(endTag + " did not exist");
 		}
 
@@ -174,6 +180,16 @@ public class SccsServiceForGitImpl extends RDFServices implements SccsService {
 
 			// create the relationships between the commit and the files
 			relateCommitsToArtifacts(commit, commitResource, sourceFolders);
+
+			// get the parent commit and associate with prov:wasInformedBy
+			for (RevCommit parent : commit.getParents()) {
+
+				Resource parentResource = model.createResource(commitPrefix
+						+ parent.getName(), PROVO.Activity);
+
+				commitResource.addProperty(PROVO.wasInformedBy, parentResource);
+
+			}
 
 		}
 
@@ -201,12 +217,14 @@ public class SccsServiceForGitImpl extends RDFServices implements SccsService {
 			if (path.endsWith(".java")) {
 				path = removeSourceRootFromPath(sourceFolders, path);
 			}
-			
+
 			// remove any spaces as this is not allowed in URI
-			// TODO: WE REALLY NEED A MORE STRATEGIC SOLUTION TO MALFORMED URI/URL CREATION
-			//       Tried URLEncode but it introduced other issues that need decisions made for
-			
-			path = path.replaceAll("\\s","");
+			// TODO: WE REALLY NEED A MORE STRATEGIC SOLUTION TO MALFORMED
+			// URI/URL CREATION
+			// Tried URLEncode but it introduced other issues that need
+			// decisions made for
+
+			path = path.replaceAll("\\s", "");
 
 			// make each file a prov:Entity
 			Resource fileResource = model.createResource(filePrefix + path,
@@ -230,16 +248,6 @@ public class SccsServiceForGitImpl extends RDFServices implements SccsService {
 			// Add some foaf properties to the author
 			author.addProperty(FOAF.name, commit.getAuthorIdent().getName());
 			author.addProperty(FOAF.mbox, authorEmail);
-
-			// get the parent commit and associate with prov:wasInformedBy
-			for (RevCommit parent : commit.getParents()) {
-
-				Resource parentResource = model.createResource(commitPrefix
-						+ parent.getName(), PROVO.Activity);
-
-				commitResource.addProperty(PROVO.wasInformedBy, parentResource);
-
-			}
 
 		}
 	}
@@ -296,7 +304,7 @@ public class SccsServiceForGitImpl extends RDFServices implements SccsService {
 
 		return path;
 	}
-	
+
 	public void close() {
 		repository.close();
 	}

@@ -44,7 +44,7 @@ public class SccsServiceForGitTest extends SparqlycodeBaseTest {
 		// create a file for the KB output
 		String fileName = "/testPublishSCforHead.ttl";
 
-		File file = new File(baseDir + "/target/classes/" + fileName);
+		File file = new File(baseDir + "/src/test/resources/" + fileName);
 
 		if (!file.exists()) {
 			file.createNewFile();
