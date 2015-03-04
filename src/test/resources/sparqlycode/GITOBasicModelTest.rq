@@ -1,0 +1,13 @@
+# This checks generally for some commits and difference properties
+
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX git:  <http://www.interition.net/sccs/git/ref/> 
+
+#SELECT ?_commit ?_file ?_modified {
+ASK WHERE {
+	
+	?_commit
+		git:difference/git:file ?_file ;
+		git:difference/git:isModified true .
+	
+}

@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.interition.sparqlycode.sccs.git.SccsServiceForGitImpl;
+import net.interition.sparqlycode.sccs.git.W3CPROVOSccsServiceForGitImpl;
 
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
@@ -101,7 +101,7 @@ public class SccsMojo extends AbstractMojo {
 
 		SccsService service;
 		try {
-			service = new SccsServiceForGitImpl(id, directory);
+			service = new W3CPROVOSccsServiceForGitImpl(id, directory);
 		} catch (Exception e) {
 			throw new MojoExecutionException(
 					"Starting the SCCS KB service failed", e);

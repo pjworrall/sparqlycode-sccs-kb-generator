@@ -23,7 +23,15 @@ If you wish to make comments regarding this Ontology, please send them to info@i
 	 
 :Author
 	 a foaf:Person ;
-	 rdfs:label "a Commit" .
+	 rdfs:label "an author of changes" .
+	 
+:Committer
+	 a foaf:Person ;
+	 rdfs:label "the person that committed the changes to the repository" .
+	 
+:Tree
+	 a rdfs:Class ;
+	 rdfs:label "a container for all the artifacts affected by a commit. considered a bNode in the model but decided on a type because it is a key concept in Git." .
 	 
 :File
 	a rdfs:Class ;
@@ -51,7 +59,17 @@ If you wish to make comments regarding this Ontology, please send them to info@i
     
 :author
 	a rdf:Property ;
-    rdfs:label "relationship to the author of a commit" .   
+    rdfs:label "relationship to the author of a commit" .  
+    
+    
+:tree  
+    a rdf:Property ;
+    rdfs:label "all the artifacts affected by the commit" . 
+    
+:difference
+    a rdf:Property ;
+    rdfs:label "all the differences between a commit and its parent(s)" . 
+    
     
 :isAdded
 	a rdf:Property ;
@@ -64,4 +82,14 @@ If you wish to make comments regarding this Ontology, please send them to info@i
 :isModified
 	a rdf:Property ;
     rdfs:label "boolean indicating if the artefact was modified" .
+    
+:isRenamed
+	a rdf:Property ;
+    rdfs:label "boolean indicating if the artefact was renamed" .
+    
+:isCopied
+	a rdf:Property ;
+    rdfs:label "boolean indicating if the artefact was copied" .
+    
+    
 

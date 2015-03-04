@@ -54,7 +54,7 @@ public class SccsServiceForGitTest extends SparqlycodeBaseTest {
 		}
 
 		// create the knowledge model
-		SccsService service = new SccsServiceForGitImpl("sccs.git", baseDir);
+		SccsService service = new W3CPROVOSccsServiceForGitImpl("sccs.git", baseDir);
 
 		List<String> sourceFolders = new ArrayList<String>();
 		sourceFolders.add(baseDir + "/src/main/java");
@@ -94,7 +94,7 @@ public class SccsServiceForGitTest extends SparqlycodeBaseTest {
 	@Test
 	public void testPublishSCforTag() throws Exception {
 
-		SccsService service = new SccsServiceForGitImpl("sccs.git", baseDir);
+		SccsService service = new W3CPROVOSccsServiceForGitImpl("sccs.git", baseDir);
 
 		String startTag = "refs/tags/0.0.2";
 		String endTag = "refs/tags/0.0.1";

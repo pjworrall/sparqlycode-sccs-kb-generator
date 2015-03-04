@@ -3,8 +3,8 @@
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX git:  <http://www.interition.net/sccs/git/ref/> 
 
-SELECT ?_commit ?_person where {
-#ASK WHERE {
+#SELECT ?_commit ?_person where {
+ASK WHERE {
 	?_commit a  git:Commit .
 	?_commit git:author ?_person .
 }

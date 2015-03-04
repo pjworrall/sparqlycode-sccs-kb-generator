@@ -9,7 +9,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import edu.emory.mathcs.backport.java.util.Arrays;
-import net.interition.sparqlycode.sccs.git.SccsServiceForGitImpl;
+import net.interition.sparqlycode.sccs.git.W3CPROVOSccsServiceForGitImpl;
 
 /*
  * This is to launch the SCCS KB Publisher
@@ -69,7 +69,7 @@ public class SccsPublish {
 
 		SccsService service;
 		try {
-			service = new SccsServiceForGitImpl(identifier, directory);
+			service = new W3CPROVOSccsServiceForGitImpl(identifier, directory);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			throw new RuntimeException(e);

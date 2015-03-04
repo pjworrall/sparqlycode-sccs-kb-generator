@@ -23,10 +23,10 @@ public class GITOAuthorTest extends SparqlycodeBaseTest {
 	}
 	
 	@Test
-	public void uriLineNumberForFieldTest() throws Exception {
+	public void gitOAuthorTest() throws Exception {
 		
 		assertTrue("GITOAuthorTest didn't encounter git:author relationships for commits",
-				 sparqlyCodeTest("GITOAuthorTest"));
+				 sparqlyCodeTest("GITOCommitAuthorTest"));
 	}
 
 }

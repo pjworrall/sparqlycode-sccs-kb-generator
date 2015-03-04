@@ -40,9 +40,9 @@ import net.interition.sparqlycode.sccs.SccsService;
  * @author Paul Worrall
  * 
  */
-public class SccsServiceForGitImpl extends RDFServices implements SccsService {
+public class W3CPROVOSccsServiceForGitImpl extends RDFServices implements SccsService {
 
-	private final Log logger = LogFactory.getLog(SccsServiceForGitImpl.class);
+	private final Log logger = LogFactory.getLog(W3CPROVOSccsServiceForGitImpl.class);
 
 	private String commitPrefix = "http://www.interition.net/sccs/";
 	private String filePrefix = "file://www.interition.net/sparqlycode/";
@@ -57,8 +57,7 @@ public class SccsServiceForGitImpl extends RDFServices implements SccsService {
 	private Model model = ModelFactory.createDefaultModel();
 
 	private Repository repository = null;
-
-	public SccsServiceForGitImpl(String projectIdentifier, String folder)
+	public W3CPROVOSccsServiceForGitImpl(String projectIdentifier, String folder)
 			throws Exception {
 
 		// instantiate the git repository
@@ -75,7 +74,6 @@ public class SccsServiceForGitImpl extends RDFServices implements SccsService {
 		buildPrefix("git", projectIdentifier);
 
 	}
-
 	/*
 	 * Produces SC SCCS KB from the current Git HEAD back X commits
 	 * 
@@ -177,6 +175,22 @@ public class SccsServiceForGitImpl extends RDFServices implements SccsService {
 			// add a property (nothing appears in the model until a property is
 			// applied)
 			commitResource.addProperty(RDFS.label, commit.getShortMessage());
+			
+			// add a date when commit was made
+			DateTime dt = new DateTime(commit.getAuthorIdent().getWhen());
+			String date = dt.toString(formater);
+			commitResource.addProperty(PROVO.endedAtTime,
+					model.createTypedLiteral(date, "xsd:dateTime"));
+
+			// add author details
+			String authorEmail = commit.getAuthorIdent().getEmailAddress();
+			Resource author = model.createResource("mailto:" + authorEmail,
+					PROVO.Person);
+			commitResource.addProperty(PROVO.wasAssociatedWith, author);
+
+			// Add some foaf properties to the author
+			author.addProperty(FOAF.name, commit.getAuthorIdent().getName());
+			author.addProperty(FOAF.mbox, authorEmail);
 
 			// create the relationships between the commit and the files
 			relateCommitsToArtifacts(commit, commitResource, sourceFolders);
@@ -188,6 +202,7 @@ public class SccsServiceForGitImpl extends RDFServices implements SccsService {
 						+ parent.getName(), PROVO.Activity);
 
 				commitResource.addProperty(PROVO.wasInformedBy, parentResource);
+				
 
 			}
 
@@ -198,6 +213,7 @@ public class SccsServiceForGitImpl extends RDFServices implements SccsService {
 		writeRdf(model, out);
 
 	}
+	
 
 	private void relateCommitsToArtifacts(final RevCommit commit,
 			final Resource commitResource, List<String> sourceFolders)
@@ -233,49 +249,7 @@ public class SccsServiceForGitImpl extends RDFServices implements SccsService {
 			// relate the prov:Entity to the commit
 			commitResource.addProperty(PROVO.used, fileResource);
 
-			DateTime dt = new DateTime(commit.getAuthorIdent().getWhen());
-
-			String date = dt.toString(formater);
-
-			commitResource.addProperty(PROVO.endedAtTime,
-					model.createTypedLiteral(date, "xsd:dateTime"));
-
-			String authorEmail = commit.getAuthorIdent().getEmailAddress();
-			Resource author = model.createResource("mailto:" + authorEmail,
-					PROVO.Person);
-			commitResource.addProperty(PROVO.wasAssociatedWith, author);
-
-			// Add some foaf properties to the author
-			author.addProperty(FOAF.name, commit.getAuthorIdent().getName());
-			author.addProperty(FOAF.mbox, authorEmail);
-
 		}
-	}
-
-	/**
-	 * 
-	 * Builds the commitPrefix URI for all subjects
-	 * 
-	 * @return
-	 */
-	private void buildPrefix(String sccs, String project) {
-
-		// not using any default prefixes to make sure we can merge easily
-		// model.setNsPrefix("", "http://default/?");
-
-		// prefix for commits
-		this.commitPrefix = this.commitPrefix + sccs + "/id/" + project + "/";
-
-		// prefix for files
-		this.filePrefix = this.filePrefix + project + "/";
-
-		model.setNsPrefix("sccs", commitPrefix);
-
-		// general prefix setting
-
-		model.setNsPrefix("foaf", FOAF.getURI());
-		model.setNsPrefix("prov", PROVO.getURI());
-
 	}
 
 	/**
