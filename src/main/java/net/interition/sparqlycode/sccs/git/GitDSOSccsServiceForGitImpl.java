@@ -2,6 +2,7 @@ package net.interition.sparqlycode.sccs.git;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -75,17 +76,18 @@ public class GitDSOSccsServiceForGitImpl extends RDFServices implements
 		walk.markStart(walk.parseCommit(from.getObjectId()));
 		walk.markUninteresting(walk.parseCommit(to.getObjectId()));
 
-		GitDSOFactoryImpl factory = new GitDSOFactoryImpl();
+		GitDSOFactoryImpl factory = new GitDSOFactoryImpl(
+				new URL(commitPrefix), new URL(filePrefix));
 
 		for (RevCommit commit : walk) {
 
 			// create model instances for the commit and its parents
 			Resource commitResource = factory.createACommit(model, commit);
-			
+
 			// create an author
-			factory.createAnAuthor(model, commitResource, 
-					commit.getAuthorIdent().getEmailAddress(),
-					commit.getAuthorIdent().getName());
+			factory.createAnAuthor(model, commitResource, commit
+					.getAuthorIdent().getEmailAddress(), commit
+					.getAuthorIdent().getName());
 
 			// for one or more parents create model info about the differences
 			for (RevCommit parent : commit.getParents()) {

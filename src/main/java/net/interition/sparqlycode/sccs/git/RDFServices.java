@@ -28,9 +28,9 @@ public abstract class RDFServices {
 
 	protected Repository repository = null;
 
-	private String commitPrefix = "http://www.interition.net/sccs/";
-	private String filePrefix = "file://www.interition.net/sparqlycode/";
-	private final DateTimeFormatter formater = new DateTimeFormatterBuilder()
+	protected String commitPrefix = "http://www.interition.net/sccs/";
+	protected String filePrefix = "file://www.interition.net/sparqlycode/";
+	protected final DateTimeFormatter formater = new DateTimeFormatterBuilder()
 			.appendYear(4, 4).appendLiteral('-').appendMonthOfYear(2)
 			.appendLiteral('-').appendDayOfMonth(2).appendLiteral('T')
 			.appendHourOfDay(2).appendLiteral(':').appendMinuteOfHour(2)

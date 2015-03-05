@@ -1,8 +1,8 @@
 package net.interition.sparqlycode.sccs.git;
 
-import net.interition.sparlycode.model.GITO;
-import net.interition.sparlycode.model.PROVO;
+import java.net.URL;
 
+import net.interition.sparlycode.model.GITO;
 import org.eclipse.jgit.diff.DiffEntry;
 import org.eclipse.jgit.diff.DiffEntry.ChangeType;
 import org.eclipse.jgit.revwalk.RevCommit;
@@ -25,11 +25,19 @@ import com.hp.hpl.jena.vocabulary.RDFS;
  */
 public class GitDSOFactoryImpl {
 
-	// this commit prefix needs to be parameterised
-	private String prefix = "http://www.interition.net/sccs/gid/aid/ver/";
+	// this commit uriPrefix needs to be parameterised
+	private String uriPrefix = "http://www.interition.net/sccs/git/id/";
+	private String filePrefix = "file://www.interition.net/sccs/git/id/";
+	
+	
+	GitDSOFactoryImpl(URL uriPrefix, URL filePrefix) {
+		this.uriPrefix = uriPrefix.toString();
+		this.filePrefix = filePrefix.toString();
+	}
+	
 
 	public Resource createACommit(Model model, RevCommit commit) {
-		Resource resource = model.createResource(prefix + commit.getName(),
+		Resource resource = model.createResource(uriPrefix + commit.getName(),
 				GITO.Commit);
 
 		resource.addProperty(RDFS.label, commit.getShortMessage());
@@ -40,7 +48,7 @@ public class GitDSOFactoryImpl {
 	}
 
 	public Resource createATree(Model model, RevTree tree) {
-		Resource resource = model.createResource(prefix + tree.getName(),
+		Resource resource = model.createResource(uriPrefix + tree.getName(),
 				GITO.Tree);
 		return resource;
 	}
@@ -48,10 +56,10 @@ public class GitDSOFactoryImpl {
 	public Resource createParentCommit(Model model, RevCommit parent) {
 
 		Resource commitResource = model.createResource(
-				prefix + parent.getName(), GITO.Commit);
+				uriPrefix + parent.getName(), GITO.Commit);
 
 		Resource parentResource = model.createResource(
-				prefix + parent.getName(), GITO.Commit);
+				uriPrefix + parent.getName(), GITO.Commit);
 
 		commitResource.addProperty(GITO.parent, parentResource);
 
@@ -78,11 +86,11 @@ public class GitDSOFactoryImpl {
 
 		/*
 		 * todo: this file resource is NOT going to be the same as what is
-		 * published by in CODE KB its prefix will also need considering. using
-		 * the default prefix for now.
+		 * published by in CODE KB its uriPrefix will also need considering. using
+		 * the default uriPrefix for now.
 		 */
 		Resource fileResource = model.createResource(
-				prefix + diff.getNewPath(), GITO.File);
+				filePrefix + diff.getNewPath(), GITO.File);
 
 		diffBnode.addProperty(GITO.file, fileResource);
 

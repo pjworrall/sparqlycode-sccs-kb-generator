@@ -1,13 +1,10 @@
 package net.interition.sparqlycode.sccs;
 
 import java.io.File;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
+import net.interition.sparqlycode.sccs.git.GitDSOSccsServiceForGitImpl;
 import net.interition.sparqlycode.sccs.git.W3CPROVOSccsServiceForGitImpl;
 
 import org.apache.maven.plugin.AbstractMojo;
@@ -22,8 +19,9 @@ import org.apache.maven.project.MavenProject;
  * work with Maven 2 apparently so using the old Javadoc method.
  * 
  * @goal screpo
+ * @phase generate-sources
  * @aggregator true
- * @requiresDirectInvocation true
+ * @requiresDirectInvocation false
  * 
  */
 public class SccsMojo extends AbstractMojo {
@@ -31,13 +29,12 @@ public class SccsMojo extends AbstractMojo {
 	/**
 	 * Configuration parameters and default values
 	 */
-	
 	/**
 	 * @parameter expression="${reactorProjects}"
 	 * @readonly
 	 */
 	private List<MavenProject> reactorProjects;
-	
+
 	/**
 	 * 
 	 * An informational message
@@ -76,18 +73,22 @@ public class SccsMojo extends AbstractMojo {
 	 */
 	private Object endTag;
 
+	/**
+	 * The Ontology to use: W3C PROV or Interitions GITO
+	 * 
+	 * @parameter expression="${screpo.ontology}" default-value="GITO"
+	 */
+	private Object ontology;
+
 	/** @parameter default-value="${project}" */
 	private org.apache.maven.project.MavenProject project;
 
 	public void execute() throws MojoExecutionException, MojoFailureException {
 
-		String gitDir = this.getGitDir(project.getBasedir()).toString();
+		String gitDir = getGitDir(project.getBasedir()).toString();
 
-		getLog().debug(
-				"Parameters - outputfile= " + outputfile
-						+ " , uri identifier= " + identifier + " , message= "
-						+ message + " , startTag= " + startTag + " , endTag= "
-						+ endTag + ", sccs dir= " + gitDir);
+		getLog().debug(getParameterReport());
+		getLog().debug("gitDir = " + gitDir);
 
 		getLog().info(message.toString());
 
@@ -98,13 +99,21 @@ public class SccsMojo extends AbstractMojo {
 		String filename = outputfile.toString();
 		String start = startTag.toString();
 		String end = endTag.toString();
+		String ont = ontology.toString();
 
 		SccsService service;
+
 		try {
-			service = new W3CPROVOSccsServiceForGitImpl(id, directory);
+			if ("GITO".equalsIgnoreCase(ont)) {
+				service = new GitDSOSccsServiceForGitImpl(id, directory); 
+			} else if ("PROVO".equalsIgnoreCase(ont)) {
+				service = new W3CPROVOSccsServiceForGitImpl(id, directory);
+			} else {
+				throw new MojoExecutionException("Unrecognised Ontology");
+			}
 		} catch (Exception e) {
-			throw new MojoExecutionException(
-					"Starting the SCCS KB service failed", e);
+			throw new MojoExecutionException("Starting an " + ont
+					+ " SCCS KB service failed", e);
 		}
 
 		File file = new File(filename);
@@ -114,24 +123,22 @@ public class SccsMojo extends AbstractMojo {
 			}
 			file.createNewFile();
 		} catch (IOException e) {
-			getLog().error("Error opening file for output.", e);
-			return;
+			throw new MojoExecutionException("Starting an " + ont
+					+ " SCCS KB service failed", e);
 		}
 
 		// we need the source code roots relative to the git base directory
 		List<String> roots = this.getSourceFolderRoots(gitDir);
-		
+
 		getLog().debug(roots.toString());
 
 		try {
 			getLog().info(
-					"calling  service.publishSCforTag() with " + file + " , "
-							+ start + " , " + end);
+					"processing " + file + ", from " + start + ", to " + end);
 
 			service.publishSCforTag(file, start, end, roots);
 		} catch (Exception e) {
-			getLog().error("Error encountered publishing SC", e);
-			return;
+			throw new MojoExecutionException(ont + " SCCS KB service failed", e);
 		}
 
 	}
@@ -146,28 +153,35 @@ public class SccsMojo extends AbstractMojo {
 
 	private List<String> getSourceFolderRoots(String gitDir) {
 
-		// if the project is multi module then iterate through and concatenate the list
+		// if the project is multi module then iterate through and concatenate
+		// the list
 		// else just process this project
-		
+
 		List<String> sourceFolders = new ArrayList<String>();
 
-		if( "POM".equalsIgnoreCase(project.getPackaging()) )  {
-			getLog().debug("Multi module project, packaging: " 
-						+ project.getPackaging() +
-						"No modules in reactor: " + reactorProjects.size());
+		if ("POM".equalsIgnoreCase(project.getPackaging())) {
+			getLog().debug(
+					"Multi module project, packaging: "
+							+ project.getPackaging()
+							+ "No modules in reactor: "
+							+ reactorProjects.size());
 
-			for( MavenProject module : reactorProjects) {
-					getLog().info("module: " + module.getName() + " baseDir: "+ module.getBasedir().toString());
-					sourceFolders.addAll(getSourceFolderRootsForProject(gitDir,module));
+			for (MavenProject module : reactorProjects) {
+				getLog().info(
+						"module: " + module.getName() + " baseDir: "
+								+ module.getBasedir().toString());
+				sourceFolders.addAll(getSourceFolderRootsForProject(gitDir,
+						module));
 			}
 		} else {
-			getLog().debug("Not a multi module project, packaging: " + project.getPackaging());
-			sourceFolders = getSourceFolderRootsForProject(gitDir,project);
+			getLog().debug(
+					"Not a multi module project, packaging: "
+							+ project.getPackaging());
+			sourceFolders = getSourceFolderRootsForProject(gitDir, project);
 		}
-		
-		
+
 		return sourceFolders;
-		
+
 	}
 
 	/**
@@ -182,15 +196,16 @@ public class SccsMojo extends AbstractMojo {
 	 * @return List<String>
 	 */
 
-	private List<String> getSourceFolderRootsForProject(String gitDir, MavenProject module) {
-		
+	private List<String> getSourceFolderRootsForProject(String gitDir,
+			MavenProject module) {
+
 		// create a mask using the absolute folder with a trailing /
 		String mask = gitDir + "/";
-		
+
 		getLog().debug("getting source file roots... mask: " + mask);
-		
+
 		// Build for project source code roots
-		
+
 		List<String> roots = new ArrayList<String>();
 		for (Object sourceAbsoluteRoot : module.getCompileSourceRoots()) {
 			String relativeSourceRoot = sourceAbsoluteRoot.toString().replace(
@@ -259,6 +274,20 @@ public class SccsMojo extends AbstractMojo {
 		}
 
 		return gitFolder;
+	}
+
+	private String getParameterReport() {
+		StringBuffer msg = new StringBuffer();
+		msg.append("mojo parameters..\n");
+		msg.append("outputfile= " + outputfile + "\n");
+		msg.append("uri identifier= " + identifier + "\n");
+		msg.append("message= " + message + "\n");
+		msg.append("startTag= " + startTag + "\n");
+		msg.append("endTag= " + endTag + "\n");
+		msg.append("ontology = " + ontology + "\n");
+
+		return msg.toString();
+
 	}
 
 }

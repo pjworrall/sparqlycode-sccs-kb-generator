@@ -49,8 +49,8 @@ public class GitDSOSccsServiceForGitTest extends SparqlycodeBaseTest {
 		String endTag = "refs/tags/0.0.1";
 
 		// create a file for the KB output
-		String fileName = "/testPublishSCforTag.ttl";
-		File file = new File(baseDir + "/target/classes/" + fileName);
+		String fileName = "/gito4git.ttl";
+		File file = new File(baseDir + fileName);
 
 		if (!file.exists()) {
 			file.createNewFile();
@@ -63,7 +63,7 @@ public class GitDSOSccsServiceForGitTest extends SparqlycodeBaseTest {
 
 		assertTrue(
 				"SCCS KB failed equivelance test for git log --pretty=oneline refs/tags/0.0.1..refs/tags/0.0.2",
-				sparqlyCodeTest("GitDSOBasicModelTest"));
+				sparqlyCodeTest("GITOBasicModelTest"));
 
 	}
 
