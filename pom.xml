@@ -19,6 +19,7 @@
 		<jgit.version>3.6.0.201412230720-r</jgit.version>
 		<maven.plugin.annotations.version>3.2.1</maven.plugin.annotations.version>
 		<maven.plugin.api.version>3.2</maven.plugin.api.version>
+		<sccskb.version>${version}</sccskb.version>
 	</properties>
 
 	<dependencies>
@@ -136,6 +137,26 @@
 			</plugin>
 
 			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>build-helper-maven-plugin</artifactId>
+				<version>1.9.1</version>
+				<executions>
+					<execution>
+						<id>add-source</id>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>add-source</goal>
+						</goals>
+						<configuration>
+							<sources>
+								<source>${basedir}/generated-sources/java</source>
+							</sources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>2.17</version>
@@ -146,7 +167,6 @@
 					<!-- The system properties are for running mvn tests off the cmd line, 
 						Eclipse needs the properties setup elsewhere -->
 					<systemPropertyVariables>
-						<sccs-ttl-loc>${basedir}/target</sccs-ttl-loc>
 						<sccs-ttl-name>/git.ttl</sccs-ttl-name>
 					</systemPropertyVariables>
 				</configuration>
@@ -264,26 +284,6 @@
 			<build>
 				<plugins>
 					<plugin>
-						<groupId>org.codehaus.mojo</groupId>
-						<artifactId>build-helper-maven-plugin</artifactId>
-						<version>1.9.1</version>
-						<executions>
-							<execution>
-								<id>add-source</id>
-								<phase>generate-sources</phase>
-								<goals>
-									<goal>add-source</goal>
-								</goals>
-								<configuration>
-									<sources>
-										<source>${basedir}/generated-sources/java</source>
-									</sources>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-
-					<plugin>
 						<!-- To run the Jena schema generator for the PROV model -->
 						<groupId>org.codehaus.mojo</groupId>
 						<artifactId>exec-maven-plugin</artifactId>
@@ -349,11 +349,11 @@
 					<plugin>
 						<groupId>net.interition</groupId>
 						<artifactId>screpo-maven-plugin</artifactId>
-						<version>0.0.7-SNAPSHOT</version>
+						<version>${sccskb.version}</version>
 						<executions>
 							<execution>
-								<!-- this binding should be the default on the mojo but it does not
-										seem to work so we are hard binding it -->
+								<!-- this binding should be the default on the mojo but it does not 
+									seem to work so we are hard binding it -->
 								<id>gito-sccs-publish</id>
 								<phase>generate-sources</phase>
 								<goals>
@@ -363,7 +363,7 @@
 						</executions>
 						<configuration>
 							<message>SCCS Projects own GITO SCCS KB Generation</message>
-							<outputfile>gito4git.ttl</outputfile>
+							<outputfile>${project.build.directory}/classes/gito4git.ttl</outputfile>
 							<startTag>refs/tags/0.0.2</startTag>
 							<endTag>refs/tags/0.0.1</endTag>
 							<ontology>GITO</ontology>
@@ -380,10 +380,10 @@
 					<plugin>
 						<groupId>net.interition</groupId>
 						<artifactId>screpo-maven-plugin</artifactId>
-						<version>0.0.7-SNAPSHOT</version>
+						<version>${sccskb.version}</version>
 						<executions>
-						<!-- this binding should be the default on the mojo but it does not
-										seem to work so we are hard binding it -->
+							<!-- this binding should be the default on the mojo but it does not 
+								seem to work so we are hard binding it -->
 							<execution>
 								<id>provo-sccs-publish</id>
 								<phase>generate-sources</phase>
@@ -394,7 +394,7 @@
 						</executions>
 						<configuration>
 							<message>SCCS Projects own PROVO SCCS KB Generation</message>
-							<outputfile>provo4git.ttl</outputfile>
+							<outputfile>${project.build.directory}/classes/provo4git.ttl</outputfile>
 							<startTag>refs/tags/0.0.2</startTag>
 							<endTag>refs/tags/0.0.1</endTag>
 							<ontology>PROVO</ontology>

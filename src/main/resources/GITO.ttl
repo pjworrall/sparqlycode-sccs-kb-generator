@@ -1,4 +1,4 @@
-@prefix : <http://www.interition.net/sccs/git/ref/> .
+@prefix : <http://ontology.interition.net/sccs/git/ref/> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix prov: <http://www.w3.org/ns/prov#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
@@ -6,14 +6,14 @@
 @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 @prefix foaf: <http://xmlns.com/foaf/0.1/> .
 
-<http://www.w3.org/ns/prov#>
+<http://ontology.interition.net/sccs/git/ref/>
     a owl:Ontology ;
     rdfs:comment """This Ontology is published by the Paul Worrall of Interition Limited (http://www.interition.net). March 2015 .
 
 This is an Ontology representing concepts in the Git source code control system.
 
 If you wish to make comments regarding this Ontology, please send them to info@interition.net. All feedback is welcome."""@en ;
-    rdfs:isDefinedBy <http://www.interition.net/sccs/git/ref> ;
+    rdfs:isDefinedBy <http://ontology.interition.net/sccs/git/ref> ;
     rdfs:label "Sparqlycode SCCS KB Domain Specific Ontology for Git"@en .
 
 
@@ -64,7 +64,19 @@ If you wish to make comments regarding this Ontology, please send them to info@i
     
 :tree  
     a rdf:Property ;
-    rdfs:label "all the artifacts affected by the commit" . 
+    rdfs:label "all the artifacts affected by the commit" .
+    
+:tag    
+	a rdf:Property ;
+    rdfs:label "a relationship to a tag. Eg. Where the subject is a Commit. This relationship is not possible in Git itself" .
+    
+:commit
+	a rdf:Property ;
+    rdfs:label "a relationship to a commit. Eg where the subject is a Tag" .
+
+:message 
+    a rdf:Property ;
+    rdfs:label "the annotation of on a tag" .
     
 :difference
     a rdf:Property ;

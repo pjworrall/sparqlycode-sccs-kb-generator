@@ -12,7 +12,7 @@ import org.junit.Test;
  * @author Paul Worrall, Interition Ltd
  *
  */
-public class GITOAuthorTest extends SparqlycodeBaseTest {
+public class GITOTagsExistTest extends SparqlycodeBaseTest {
 
 	/**
 	 * @throws java.lang.Exception
@@ -25,8 +25,8 @@ public class GITOAuthorTest extends SparqlycodeBaseTest {
 	@Test
 	public void gitOAuthorTest() throws Exception {
 		
-		assertTrue("GITOCommitAuthorTest didn't encounter git:author relationships for commits",
-				 sparqlyCodeTest("GITOCommitAuthorTest"));
+		assertTrue("GITOTagsExistTest didn't encounter any tags",
+				 sparqlyCodeTest("GITOTagsExistTest"));
 	}
 
 }

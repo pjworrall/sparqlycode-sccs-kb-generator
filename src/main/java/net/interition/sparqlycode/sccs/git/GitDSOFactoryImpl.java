@@ -3,9 +3,13 @@ package net.interition.sparqlycode.sccs.git;
 import java.net.URL;
 
 import net.interition.sparlycode.model.GITO;
+
 import org.eclipse.jgit.diff.DiffEntry;
 import org.eclipse.jgit.diff.DiffEntry.ChangeType;
+import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.revwalk.RevCommit;
+import org.eclipse.jgit.revwalk.RevObject;
+import org.eclipse.jgit.revwalk.RevTag;
 import org.eclipse.jgit.revwalk.RevTree;
 
 import com.hp.hpl.jena.rdf.model.Model;
@@ -142,5 +146,27 @@ public class GitDSOFactoryImpl {
 		
 		return author;
 		
+	}
+	
+	public Resource createATag(Model model, RevTag tag) {
+		
+		String tagId = tag.getId().name();
+		String comment = ((RevTag) tag).getShortMessage();
+		String commitId = ((RevTag) tag).getObject().name();
+		
+		
+		// this resource is expected to already exist.
+		Resource commitResource = model.createResource(uriPrefix + commitId,
+				GITO.Commit);
+		
+		Resource tagResource = model.createResource(uriPrefix + tagId,
+				GITO.Tag);
+		
+		commitResource.addProperty(GITO.tag,tagResource);
+		
+		tagResource.addProperty(GITO.commit, commitResource);
+		tagResource.addProperty(GITO.message, comment);
+			
+		return tagResource;
 	}
 }

@@ -1,0 +1,12 @@
+# This checks generally for tags, their properties, and their commits
+
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX git:  <http://ontology.interition.net/sccs/git/ref/> 
+
+#SELECT ?_commit ?_tag ?_message {
+ASK WHERE {
+	
+	?_commit git:tag ?_tag .
+	?_tag git:message ?_message .
+	
+}

@@ -1,10 +1,16 @@
 # This checks for the existence of git:author for a Git commit
 
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX git:  <http://www.interition.net/sccs/git/ref/> 
+PREFIX git:  <http://ontology.interition.net/sccs/git/ref/> 
+PREFIX prov: <http://www.w3.org/ns/prov#>
 
-#SELECT ?_commit ?_person where {
-ASK WHERE {
-	?_commit a  git:Commit .
-	?_commit git:author ?_person .
+SELECT ?_commit  ?_time where {
+#ASK WHERE {
+
+	?_commit a  git:Commit ; rdfs:label ?Commit ;
+	  git:difference ?_difference .	  
+	  ?_difference git:file ?file ; git:isModified ?_boolean .
+	  
+    #?_commit prov:endedAtTime ?_time .
+	
 }

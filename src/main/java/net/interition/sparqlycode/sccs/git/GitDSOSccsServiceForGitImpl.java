@@ -9,10 +9,13 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.jgit.diff.DiffEntry;
 import org.eclipse.jgit.diff.DiffFormatter;
+import org.eclipse.jgit.errors.MissingObjectException;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.ObjectReader;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.revwalk.RevCommit;
+import org.eclipse.jgit.revwalk.RevObject;
+import org.eclipse.jgit.revwalk.RevTag;
 import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import org.eclipse.jgit.treewalk.CanonicalTreeParser;
@@ -73,12 +76,17 @@ public class GitDSOSccsServiceForGitImpl extends RDFServices implements
 
 		logger.debug("walk from: " + startTag + " , to " + endTag);
 
+		// scope the walk to between the two tag refs
 		walk.markStart(walk.parseCommit(from.getObjectId()));
 		walk.markUninteresting(walk.parseCommit(to.getObjectId()));
 
 		GitDSOFactoryImpl factory = new GitDSOFactoryImpl(
 				new URL(commitPrefix), new URL(filePrefix));
 
+		// process the tags themselves
+		createTags(factory, from, to);
+
+		// process the commits
 		for (RevCommit commit : walk) {
 
 			// create model instances for the commit and its parents
@@ -131,4 +139,34 @@ public class GitDSOSccsServiceForGitImpl extends RDFServices implements
 
 	}
 
+	private void createTags(GitDSOFactoryImpl factory, Ref from, Ref to) {
+
+		RevWalk walk = new RevWalk(repository);
+
+		// ugly but hey can't think of anything else at the moment
+
+		for (Ref ref : new Ref[] { from, to } ) {
+			RevObject object;
+			try {
+				object = walk.parseAny(ref.getObjectId());
+			} catch (MissingObjectException e) {
+				logger.warn("Could not process tag. Ignored.", e);
+				return;
+			} catch (IOException e) {
+				logger.warn("Could not process tag. Ignored.", e);
+				return;
+			}
+
+			if (object instanceof RevTag) {
+				logger.debug("calling factory.createATag() for tag: " + object.getName());
+				
+				factory.createATag(model, (RevTag) object);
+			} else if (object instanceof RevCommit) {
+				logger.warn("Unannotated tag not supported yet. Ignored.");
+			} else {
+				logger.warn("tag type undeterminable. Ignored.");
+			}
+		}
+
+	}
 }
