@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import net.interition.sparlycode.model.GITO;
 import net.interition.sparlycode.model.PROVO;
 
 import org.apache.commons.logging.Log;
@@ -23,7 +24,6 @@ public abstract class RDFServices {
 	private final Log logger = LogFactory.getLog(RDFServices.class);
 
 	// create an empty Jena Model
-	@SuppressWarnings("unused")
 	protected Model model = ModelFactory.createDefaultModel();
 
 	protected Repository repository = null;
@@ -36,7 +36,6 @@ public abstract class RDFServices {
 			.appendHourOfDay(2).appendLiteral(':').appendMinuteOfHour(2)
 			.appendLiteral(':').appendSecondOfMinute(2)
 			.appendTimeZoneOffset(null, true, 3, 3).toFormatter();
-
 
 	/**
 	 * 
@@ -83,12 +82,18 @@ public abstract class RDFServices {
 		// prefix for files
 		this.filePrefix = this.filePrefix + project + "/";
 
+		// I don't believe these will have any effect while we have the problem
+		// with "/" in the prefix paths
 		model.setNsPrefix("sccs", commitPrefix);
+		model.setNsPrefix("file", filePrefix);
 
-		// general prefix setting
-
+		// general prefix setting for Ontologies
 		model.setNsPrefix("foaf", FOAF.getURI());
 		model.setNsPrefix("prov", PROVO.getURI());
+		model.setNsPrefix("git", GITO.getURI());
+
+		logger.debug("base uri for commits: " + commitPrefix);
+		logger.debug("base uri for files: " + filePrefix);
 
 	}
 }

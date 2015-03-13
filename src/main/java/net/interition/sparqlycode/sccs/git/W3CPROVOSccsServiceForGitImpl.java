@@ -44,14 +44,6 @@ public class W3CPROVOSccsServiceForGitImpl extends RDFServices implements SccsSe
 
 	private final Log logger = LogFactory.getLog(W3CPROVOSccsServiceForGitImpl.class);
 
-	private String commitPrefix = "http://www.interition.net/sccs/";
-	private String filePrefix = "file://www.interition.net/sparqlycode/";
-	private final DateTimeFormatter formater = new DateTimeFormatterBuilder()
-			.appendYear(4, 4).appendLiteral('-').appendMonthOfYear(2)
-			.appendLiteral('-').appendDayOfMonth(2).appendLiteral('T')
-			.appendHourOfDay(2).appendLiteral(':').appendMinuteOfHour(2)
-			.appendLiteral(':').appendSecondOfMinute(2)
-			.appendTimeZoneOffset(null, true, 3, 3).toFormatter();
 
 	// create an empty Jena Model
 	private Model model = ModelFactory.createDefaultModel();
