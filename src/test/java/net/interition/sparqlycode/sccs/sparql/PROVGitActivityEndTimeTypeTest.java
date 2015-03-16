@@ -25,7 +25,7 @@ public class PROVGitActivityEndTimeTypeTest extends SparqlycodeBaseTest {
 	@Test
 	public void uriLineNumberForFieldTest() throws Exception {
 		
-		assertFalse("PROVGitActivityEndTimeTypeTest didn't eprov:endedAtTime objects were of xsd:dateTime type",
+		assertTrue("PROVGitActivityEndTimeTypeTest didn't find prov:endedAtTime objects were of xsd:dateTime type",
 				 sparqlyCodeTest("PROVGitActivityEndTimeTypeTest"));
 	}
 

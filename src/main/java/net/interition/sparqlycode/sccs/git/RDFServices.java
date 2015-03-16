@@ -35,7 +35,7 @@ public abstract class RDFServices {
 			.appendLiteral('-').appendDayOfMonth(2).appendLiteral('T')
 			.appendHourOfDay(2).appendLiteral(':').appendMinuteOfHour(2)
 			.appendLiteral(':').appendSecondOfMinute(2)
-			.appendTimeZoneOffset(null, true, 3, 3).toFormatter();
+			.appendTimeZoneOffset(null, true, 2, 2).toFormatter();
 
 	/**
 	 * 

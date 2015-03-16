@@ -26,6 +26,7 @@ import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormatter;
 import org.joda.time.format.DateTimeFormatterBuilder;
 
+import com.hp.hpl.jena.datatypes.xsd.XSDDatatype;
 import com.hp.hpl.jena.rdf.model.Model;
 import com.hp.hpl.jena.rdf.model.ModelFactory;
 import com.hp.hpl.jena.rdf.model.Resource;
@@ -172,7 +173,7 @@ public class W3CPROVOSccsServiceForGitImpl extends RDFServices implements SccsSe
 			DateTime dt = new DateTime(commit.getAuthorIdent().getWhen());
 			String date = dt.toString(formater);
 			commitResource.addProperty(PROVO.endedAtTime,
-					model.createTypedLiteral(date, "xsd:dateTime"));
+					model.createTypedLiteral(date, XSDDatatype.XSDdateTime));
 
 			// add author details
 			String authorEmail = commit.getAuthorIdent().getEmailAddress();
